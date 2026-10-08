@@ -1,0 +1,705 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "time_min": 30,
+    "rain_intensity_mm_hr": 65.0,
+    "max_depth_cm": 28.7
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "ROAD_SION_CIRCLE",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.86,
+            19.0385
+          ],
+          [
+            72.8619,
+            19.039
+          ],
+          [
+            72.8635,
+            19.0395
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_SION_CIRCLE",
+        "name": "Sion Circle",
+        "drain_node": "INLET_SION_CIRCLE",
+        "base_speed_kmh": 30,
+        "highway": "primary",
+        "length_km": 0.404,
+        "depth_cm": 14.5,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 4.03
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_NO_24",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8619,
+            19.039
+          ],
+          [
+            72.859,
+            19.0405
+          ],
+          [
+            72.857,
+            19.042
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_NO_24",
+        "name": "Road No. 24",
+        "drain_node": "INLET_ROAD_24",
+        "base_speed_kmh": 25,
+        "highway": "secondary",
+        "length_km": 0.64,
+        "depth_cm": 11.5,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 4.0
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_GANDHI_MKT",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.86,
+            19.0385
+          ],
+          [
+            72.859,
+            19.036
+          ],
+          [
+            72.858,
+            19.0335
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_GANDHI_MKT",
+        "name": "Gandhi Market Road (Dr. B.A. Road)",
+        "drain_node": "INLET_GANDHI_MKT",
+        "base_speed_kmh": 35,
+        "highway": "primary",
+        "length_km": 0.598,
+        "depth_cm": 7.3,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 3.56
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_KINGS_CIRCLE",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.858,
+            19.0335
+          ],
+          [
+            72.857,
+            19.0325
+          ],
+          [
+            72.856,
+            19.0315
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_KINGS_CIRCLE",
+        "name": "Maheshwari Udyan / King's Circle",
+        "drain_node": "INLET_KINGS_CIRCLE",
+        "base_speed_kmh": 35,
+        "highway": "primary",
+        "length_km": 0.314,
+        "depth_cm": 1.7,
+        "level": "Green",
+        "color": "#10b981",
+        "status": "Passable",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": false,
+        "elevation_m": 4.04
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_SION_STATION",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8619,
+            19.039
+          ],
+          [
+            72.8635,
+            19.04
+          ],
+          [
+            72.865,
+            19.041
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_SION_STATION",
+        "name": "Sion Station Road",
+        "drain_node": "INLET_SION_STATION_E",
+        "base_speed_kmh": 20,
+        "highway": "tertiary",
+        "length_km": 0.41,
+        "depth_cm": 20.8,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 5.9
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_SULO_SHETTY",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.857,
+            19.042
+          ],
+          [
+            72.8585,
+            19.0435
+          ],
+          [
+            72.86,
+            19.045
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_SULO_SHETTY",
+        "name": "Sulochana Shetty Marg",
+        "drain_node": "INLET_SULO_SHETTY",
+        "base_speed_kmh": 30,
+        "highway": "secondary",
+        "length_km": 0.471,
+        "depth_cm": 4.0,
+        "level": "Green",
+        "color": "#10b981",
+        "status": "Passable",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": false,
+        "elevation_m": 5.93
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_LBS_MARG_S",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8619,
+            19.039
+          ],
+          [
+            72.8625,
+            19.0415
+          ],
+          [
+            72.863,
+            19.044
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_LBS_MARG_S",
+        "name": "LBS Marg (Sion Section)",
+        "drain_node": "INLET_LBS_MARG_S",
+        "base_speed_kmh": 35,
+        "highway": "primary",
+        "length_km": 0.568,
+        "depth_cm": 5.5,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 6.85
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_LBS_MARG_N",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.863,
+            19.044
+          ],
+          [
+            72.8638,
+            19.0465
+          ],
+          [
+            72.8645,
+            19.049
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_LBS_MARG_N",
+        "name": "LBS Marg North",
+        "drain_node": "INLET_LBS_MARG_N",
+        "base_speed_kmh": 40,
+        "highway": "primary",
+        "length_km": 0.58,
+        "depth_cm": 17.2,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 18.33
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_DHARAVI_LINK",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.857,
+            19.042
+          ],
+          [
+            72.8555,
+            19.041
+          ],
+          [
+            72.854,
+            19.04
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_DHARAVI_LINK",
+        "name": "Dharavi - Sion Link Road",
+        "drain_node": "INLET_DHARAVI_LINK",
+        "base_speed_kmh": 30,
+        "highway": "secondary",
+        "length_km": 0.4,
+        "depth_cm": 6.4,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 4.71
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_EEH_BYPASS",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.865,
+            19.041
+          ],
+          [
+            72.867,
+            19.043
+          ],
+          [
+            72.869,
+            19.046
+          ],
+          [
+            72.871,
+            19.05
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_EEH_BYPASS",
+        "name": "Eastern Express Highway (Elevated/High Section)",
+        "drain_node": "INLET_EEH_CHUNABHATTI",
+        "base_speed_kmh": 50,
+        "highway": "trunk",
+        "length_km": 1.211,
+        "depth_cm": 14.5,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 20.63
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_LTT_CONNECTOR",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8645,
+            19.049
+          ],
+          [
+            72.868,
+            19.051
+          ],
+          [
+            72.8728,
+            19.0535
+          ],
+          [
+            72.8826,
+            19.0728
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_LTT_CONNECTOR",
+        "name": "Kurla - LTT Hospital Route",
+        "drain_node": "INLET_LTT_CONNECTOR",
+        "base_speed_kmh": 45,
+        "highway": "primary",
+        "length_km": 3.451,
+        "depth_cm": 14.4,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 9.22
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_EEH_TO_LTT",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.871,
+            19.05
+          ],
+          [
+            72.875,
+            19.054
+          ],
+          [
+            72.8826,
+            19.0728
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_EEH_TO_LTT",
+        "name": "EEH to LTT Hospital Bypass",
+        "drain_node": "INLET_LTT_CONNECTOR",
+        "base_speed_kmh": 50,
+        "highway": "trunk",
+        "length_km": 2.879,
+        "depth_cm": 15.4,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": true,
+        "elevation_m": 8.47
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ROAD_SION_FORT_CREST",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8635,
+            19.04
+          ],
+          [
+            72.8655,
+            19.044
+          ],
+          [
+            72.8665,
+            19.0465
+          ],
+          [
+            72.868,
+            19.049
+          ],
+          [
+            72.871,
+            19.05
+          ]
+        ]
+      },
+      "properties": {
+        "id": "ROAD_SION_FORT_CREST",
+        "name": "Sion Fort Ridge Road (Elevated Safe Corridor)",
+        "drain_node": "INLET_SION_FORT",
+        "base_speed_kmh": 30,
+        "highway": "tertiary",
+        "length_km": 1.47,
+        "depth_cm": 1.5,
+        "level": "Green",
+        "color": "#10b981",
+        "status": "Passable",
+        "time_min": 30,
+        "rain_intensity_mm_hr": 65.0,
+        "surcharged": false,
+        "elevation_m": 23.59
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_SION_STATION_E",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8635,
+          19.04
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_SION_STATION_E",
+        "name": "Sion Station East",
+        "depth_cm": 17.8,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 246.44,
+        "is_hotspot": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_SION_CIRCLE",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8619,
+          19.039
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_SION_CIRCLE",
+        "name": "Sion Circle Sump",
+        "depth_cm": 11.0,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 242.88,
+        "is_hotspot": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_LBS_MARG_N",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8645,
+          19.049
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_LBS_MARG_N",
+        "name": "LBS Marg North Inlet",
+        "depth_cm": 28.7,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 287.71,
+        "is_hotspot": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_LBS_MARG_S",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.863,
+          19.044
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_LBS_MARG_S",
+        "name": "LBS Marg South Junction",
+        "depth_cm": 5.1,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 89.23,
+        "is_hotspot": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_ROAD_24",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.857,
+          19.042
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_ROAD_24",
+        "name": "Road No. 24 Drain",
+        "depth_cm": 8.7,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 182.06,
+        "is_hotspot": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_GANDHI_MKT",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.858,
+          19.0335
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_GANDHI_MKT",
+        "name": "Gandhi Market Low Inlet",
+        "depth_cm": 5.4,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 223.11,
+        "is_hotspot": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_DHARAVI_LINK",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.854,
+          19.04
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_DHARAVI_LINK",
+        "name": "Dharavi Link Junction",
+        "depth_cm": 5.1,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 113.41,
+        "is_hotspot": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_LTT_CONNECTOR",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.871,
+          19.052
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_LTT_CONNECTOR",
+        "name": "LTT Kurla Connector Drain",
+        "depth_cm": 16.0,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 250.93,
+        "is_hotspot": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "HOTSPOT_INLET_EEH_CHUNABHATTI",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.868,
+          19.042
+        ]
+      },
+      "properties": {
+        "id": "HOTSPOT_INLET_EEH_CHUNABHATTI",
+        "name": "EEH Chunabhatti Drain",
+        "depth_cm": 24.1,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
+        "time_min": 30,
+        "surcharge_rate_mm_hr": 481.24,
+        "is_hotspot": true
+      }
+    }
+  ]
+}

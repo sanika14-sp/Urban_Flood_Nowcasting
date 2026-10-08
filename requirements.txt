@@ -1,0 +1,9 @@
+numpy>=2.0.0
+pandas>=2.2.0
+scipy>=1.14.0
+shapely>=2.0.0
+networkx>=3.0
+geopandas>=1.0.0
+rasterio>=1.4.0
+flask>=3.0.0
+flask-cors>=5.0.0

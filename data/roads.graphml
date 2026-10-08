@@ -1,0 +1,431 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d9" for="edge" attr.name="highway" attr.type="string" />
+  <key id="d8" for="edge" attr.name="base_speed_kmh" attr.type="double" />
+  <key id="d7" for="edge" attr.name="time_min" attr.type="double" />
+  <key id="d6" for="edge" attr.name="distance_km" attr.type="double" />
+  <key id="d5" for="edge" attr.name="drain_node" attr.type="string" />
+  <key id="d4" for="edge" attr.name="name" attr.type="string" />
+  <key id="d3" for="edge" attr.name="road_id" attr.type="string" />
+  <key id="d2" for="edge" attr.name="id" attr.type="string" />
+  <key id="d1" for="node" attr.name="x" attr.type="double" />
+  <key id="d0" for="node" attr.name="y" attr.type="double" />
+  <graph edgedefault="undirected">
+    <node id="19.0385,72.8600">
+      <data key="d0">19.0385</data>
+      <data key="d1">72.86</data>
+    </node>
+    <node id="19.0390,72.8619">
+      <data key="d0">19.039</data>
+      <data key="d1">72.8619</data>
+    </node>
+    <node id="19.0395,72.8635">
+      <data key="d0">19.0395</data>
+      <data key="d1">72.8635</data>
+    </node>
+    <node id="19.0405,72.8590">
+      <data key="d0">19.0405</data>
+      <data key="d1">72.859</data>
+    </node>
+    <node id="19.0420,72.8570">
+      <data key="d0">19.042</data>
+      <data key="d1">72.857</data>
+    </node>
+    <node id="19.0360,72.8590">
+      <data key="d0">19.036</data>
+      <data key="d1">72.859</data>
+    </node>
+    <node id="19.0335,72.8580">
+      <data key="d0">19.0335</data>
+      <data key="d1">72.858</data>
+    </node>
+    <node id="19.0325,72.8570">
+      <data key="d0">19.0325</data>
+      <data key="d1">72.857</data>
+    </node>
+    <node id="19.0315,72.8560">
+      <data key="d0">19.0315</data>
+      <data key="d1">72.856</data>
+    </node>
+    <node id="19.0400,72.8635">
+      <data key="d0">19.04</data>
+      <data key="d1">72.8635</data>
+    </node>
+    <node id="19.0410,72.8650">
+      <data key="d0">19.041</data>
+      <data key="d1">72.865</data>
+    </node>
+    <node id="19.0435,72.8585">
+      <data key="d0">19.0435</data>
+      <data key="d1">72.8585</data>
+    </node>
+    <node id="19.0450,72.8600">
+      <data key="d0">19.045</data>
+      <data key="d1">72.86</data>
+    </node>
+    <node id="19.0415,72.8625">
+      <data key="d0">19.0415</data>
+      <data key="d1">72.8625</data>
+    </node>
+    <node id="19.0440,72.8630">
+      <data key="d0">19.044</data>
+      <data key="d1">72.863</data>
+    </node>
+    <node id="19.0465,72.8638">
+      <data key="d0">19.0465</data>
+      <data key="d1">72.8638</data>
+    </node>
+    <node id="19.0490,72.8645">
+      <data key="d0">19.049</data>
+      <data key="d1">72.8645</data>
+    </node>
+    <node id="19.0410,72.8555">
+      <data key="d0">19.041</data>
+      <data key="d1">72.8555</data>
+    </node>
+    <node id="19.0400,72.8540">
+      <data key="d0">19.04</data>
+      <data key="d1">72.854</data>
+    </node>
+    <node id="19.0430,72.8670">
+      <data key="d0">19.043</data>
+      <data key="d1">72.867</data>
+    </node>
+    <node id="19.0460,72.8690">
+      <data key="d0">19.046</data>
+      <data key="d1">72.869</data>
+    </node>
+    <node id="19.0500,72.8710">
+      <data key="d0">19.05</data>
+      <data key="d1">72.871</data>
+    </node>
+    <node id="19.0510,72.8680">
+      <data key="d0">19.051</data>
+      <data key="d1">72.868</data>
+    </node>
+    <node id="19.0535,72.8728">
+      <data key="d0">19.0535</data>
+      <data key="d1">72.8728</data>
+    </node>
+    <node id="19.0728,72.8826">
+      <data key="d0">19.0728</data>
+      <data key="d1">72.8826</data>
+    </node>
+    <node id="19.0540,72.8750">
+      <data key="d0">19.054</data>
+      <data key="d1">72.875</data>
+    </node>
+    <node id="19.0440,72.8655">
+      <data key="d0">19.044</data>
+      <data key="d1">72.8655</data>
+    </node>
+    <node id="19.0465,72.8665">
+      <data key="d0">19.0465</data>
+      <data key="d1">72.8665</data>
+    </node>
+    <node id="19.0490,72.8680">
+      <data key="d0">19.049</data>
+      <data key="d1">72.868</data>
+    </node>
+    <edge source="19.0385,72.8600" target="19.0390,72.8619">
+      <data key="d2">ROAD_SION_CIRCLE_0</data>
+      <data key="d3">ROAD_SION_CIRCLE</data>
+      <data key="d4">Sion Circle</data>
+      <data key="d5">INLET_SION_CIRCLE</data>
+      <data key="d6">0.21808039801944856</data>
+      <data key="d7">0.4361607960388971</data>
+      <data key="d8">30.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0385,72.8600" target="19.0360,72.8590">
+      <data key="d2">ROAD_GANDHI_MKT_0</data>
+      <data key="d3">ROAD_GANDHI_MKT</data>
+      <data key="d4">Gandhi Market Road (Dr. B.A. Road)</data>
+      <data key="d5">INLET_GANDHI_MKT</data>
+      <data key="d6">0.29887664679592746</data>
+      <data key="d7">0.5123599659358756</data>
+      <data key="d8">35.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0390,72.8619" target="19.0395,72.8635">
+      <data key="d2">ROAD_SION_CIRCLE_1</data>
+      <data key="d3">ROAD_SION_CIRCLE</data>
+      <data key="d4">Sion Circle</data>
+      <data key="d5">INLET_SION_CIRCLE</data>
+      <data key="d6">0.18606990621763267</data>
+      <data key="d7">0.37213981243526534</data>
+      <data key="d8">30.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0390,72.8619" target="19.0405,72.8590">
+      <data key="d2">ROAD_NO_24_0</data>
+      <data key="d3">ROAD_NO_24</data>
+      <data key="d4">Road No. 24</data>
+      <data key="d5">INLET_ROAD_24</data>
+      <data key="d6">0.3624111753254699</data>
+      <data key="d7">0.8697868207811278</data>
+      <data key="d8">25.0</data>
+      <data key="d9">secondary</data>
+    </edge>
+    <edge source="19.0390,72.8619" target="19.0400,72.8635">
+      <data key="d2">ROAD_SION_STATION_0</data>
+      <data key="d3">ROAD_SION_STATION</data>
+      <data key="d4">Sion Station Road</data>
+      <data key="d5">INLET_SION_STATION_E</data>
+      <data key="d6">0.2094343811311685</data>
+      <data key="d7">0.6283031433935056</data>
+      <data key="d8">20.0</data>
+      <data key="d9">tertiary</data>
+    </edge>
+    <edge source="19.0390,72.8619" target="19.0415,72.8625">
+      <data key="d2">ROAD_LBS_MARG_S_0</data>
+      <data key="d3">ROAD_LBS_MARG_S</data>
+      <data key="d4">LBS Marg (Sion Section)</data>
+      <data key="d5">INLET_LBS_MARG_S</data>
+      <data key="d6">0.2853801149339845</data>
+      <data key="d7">0.48922305417254486</data>
+      <data key="d8">35.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0405,72.8590" target="19.0420,72.8570">
+      <data key="d2">ROAD_NO_24_1</data>
+      <data key="d3">ROAD_NO_24</data>
+      <data key="d4">Road No. 24</data>
+      <data key="d5">INLET_ROAD_24</data>
+      <data key="d6">0.27749999999958985</data>
+      <data key="d7">0.6659999999990156</data>
+      <data key="d8">25.0</data>
+      <data key="d9">secondary</data>
+    </edge>
+    <edge source="19.0420,72.8570" target="19.0435,72.8585">
+      <data key="d2">ROAD_SULO_SHETTY_0</data>
+      <data key="d3">ROAD_SULO_SHETTY</data>
+      <data key="d4">Sulochana Shetty Marg</data>
+      <data key="d5">INLET_SULO_SHETTY</data>
+      <data key="d6">0.23546655813568695</data>
+      <data key="d7">0.4709331162713739</data>
+      <data key="d8">30.0</data>
+      <data key="d9">secondary</data>
+    </edge>
+    <edge source="19.0420,72.8570" target="19.0410,72.8555">
+      <data key="d2">ROAD_DHARAVI_LINK_0</data>
+      <data key="d3">ROAD_DHARAVI_LINK</data>
+      <data key="d4">Dharavi - Sion Link Road</data>
+      <data key="d5">INLET_DHARAVI_LINK</data>
+      <data key="d6">0.20010809578767566</data>
+      <data key="d7">0.4002161915753513</data>
+      <data key="d8">30.0</data>
+      <data key="d9">secondary</data>
+    </edge>
+    <edge source="19.0360,72.8590" target="19.0335,72.8580">
+      <data key="d2">ROAD_GANDHI_MKT_1</data>
+      <data key="d3">ROAD_GANDHI_MKT</data>
+      <data key="d4">Gandhi Market Road (Dr. B.A. Road)</data>
+      <data key="d5">INLET_GANDHI_MKT</data>
+      <data key="d6">0.2988766467957078</data>
+      <data key="d7">0.512359965935499</data>
+      <data key="d8">35.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0335,72.8580" target="19.0325,72.8570">
+      <data key="d2">ROAD_KINGS_CIRCLE_0</data>
+      <data key="d3">ROAD_KINGS_CIRCLE</data>
+      <data key="d4">Maheshwari Udyan / King's Circle</data>
+      <data key="d5">INLET_KINGS_CIRCLE</data>
+      <data key="d6">0.15697770542388426</data>
+      <data key="d7">0.26910463786951583</data>
+      <data key="d8">35.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0325,72.8570" target="19.0315,72.8560">
+      <data key="d2">ROAD_KINGS_CIRCLE_1</data>
+      <data key="d3">ROAD_KINGS_CIRCLE</data>
+      <data key="d4">Maheshwari Udyan / King's Circle</data>
+      <data key="d5">INLET_KINGS_CIRCLE</data>
+      <data key="d6">0.1569777054236054</data>
+      <data key="d7">0.2691046378690378</data>
+      <data key="d8">35.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0400,72.8635" target="19.0410,72.8650">
+      <data key="d2">ROAD_SION_STATION_1</data>
+      <data key="d3">ROAD_SION_STATION</data>
+      <data key="d4">Sion Station Road</data>
+      <data key="d5">INLET_SION_STATION_E</data>
+      <data key="d6">0.20010809578767566</data>
+      <data key="d7">0.600324287363027</data>
+      <data key="d8">20.0</data>
+      <data key="d9">tertiary</data>
+    </edge>
+    <edge source="19.0400,72.8635" target="19.0440,72.8655">
+      <data key="d2">ROAD_SION_FORT_CREST_0</data>
+      <data key="d3">ROAD_SION_FORT_CREST</data>
+      <data key="d4">Sion Fort Ridge Road (Elevated Safe Corridor)</data>
+      <data key="d5">INLET_SION_FORT</data>
+      <data key="d6">0.4964070910048546</data>
+      <data key="d7">0.9928141820097092</data>
+      <data key="d8">30.0</data>
+      <data key="d9">tertiary</data>
+    </edge>
+    <edge source="19.0410,72.8650" target="19.0430,72.8670">
+      <data key="d2">ROAD_EEH_BYPASS_0</data>
+      <data key="d3">ROAD_EEH_BYPASS</data>
+      <data key="d4">Eastern Express Highway (Elevated/High Section)</data>
+      <data key="d5">INLET_EEH_CHUNABHATTI</data>
+      <data key="d6">0.3139554108474896</data>
+      <data key="d7">0.37674649301698754</data>
+      <data key="d8">50.0</data>
+      <data key="d9">trunk</data>
+    </edge>
+    <edge source="19.0435,72.8585" target="19.0450,72.8600">
+      <data key="d2">ROAD_SULO_SHETTY_1</data>
+      <data key="d3">ROAD_SULO_SHETTY</data>
+      <data key="d4">Sulochana Shetty Marg</data>
+      <data key="d5">INLET_SULO_SHETTY</data>
+      <data key="d6">0.23546655813457157</data>
+      <data key="d7">0.47093311626914314</data>
+      <data key="d8">30.0</data>
+      <data key="d9">secondary</data>
+    </edge>
+    <edge source="19.0415,72.8625" target="19.0440,72.8630">
+      <data key="d2">ROAD_LBS_MARG_S_1</data>
+      <data key="d3">ROAD_LBS_MARG_S</data>
+      <data key="d4">LBS Marg (Sion Section)</data>
+      <data key="d5">INLET_LBS_MARG_S</data>
+      <data key="d6">0.28299558300459077</data>
+      <data key="d7">0.485135285150727</data>
+      <data key="d8">35.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0440,72.8630" target="19.0465,72.8638">
+      <data key="d2">ROAD_LBS_MARG_N_0</data>
+      <data key="d3">ROAD_LBS_MARG_N</data>
+      <data key="d4">LBS Marg North</data>
+      <data key="d5">INLET_LBS_MARG_N</data>
+      <data key="d6">0.2913617854147006</data>
+      <data key="d7">0.4370426781220509</data>
+      <data key="d8">40.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0465,72.8638" target="19.0490,72.8645">
+      <data key="d2">ROAD_LBS_MARG_N_1</data>
+      <data key="d3">ROAD_LBS_MARG_N</data>
+      <data key="d4">LBS Marg North</data>
+      <data key="d5">INLET_LBS_MARG_N</data>
+      <data key="d6">0.28817276068361425</data>
+      <data key="d7">0.43225914102542135</data>
+      <data key="d8">40.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0490,72.8645" target="19.0510,72.8680">
+      <data key="d2">ROAD_LTT_CONNECTOR_0</data>
+      <data key="d3">ROAD_LTT_CONNECTOR</data>
+      <data key="d4">Kurla - LTT Hospital Route</data>
+      <data key="d5">INLET_LTT_CONNECTOR</data>
+      <data key="d6">0.4474553050293799</data>
+      <data key="d7">0.5966070733725066</data>
+      <data key="d8">45.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0410,72.8555" target="19.0400,72.8540">
+      <data key="d2">ROAD_DHARAVI_LINK_1</data>
+      <data key="d3">ROAD_DHARAVI_LINK</data>
+      <data key="d4">Dharavi - Sion Link Road</data>
+      <data key="d5">INLET_DHARAVI_LINK</data>
+      <data key="d6">0.20010809578898814</data>
+      <data key="d7">0.4002161915779763</data>
+      <data key="d8">30.0</data>
+      <data key="d9">secondary</data>
+    </edge>
+    <edge source="19.0430,72.8670" target="19.0460,72.8690">
+      <data key="d2">ROAD_EEH_BYPASS_1</data>
+      <data key="d3">ROAD_EEH_BYPASS</data>
+      <data key="d4">Eastern Express Highway (Elevated/High Section)</data>
+      <data key="d5">INLET_EEH_CHUNABHATTI</data>
+      <data key="d6">0.40021619157622634</data>
+      <data key="d7">0.48025942989147163</data>
+      <data key="d8">50.0</data>
+      <data key="d9">trunk</data>
+    </edge>
+    <edge source="19.0460,72.8690" target="19.0500,72.8710">
+      <data key="d2">ROAD_EEH_BYPASS_2</data>
+      <data key="d3">ROAD_EEH_BYPASS</data>
+      <data key="d4">Eastern Express Highway (Elevated/High Section)</data>
+      <data key="d5">INLET_EEH_CHUNABHATTI</data>
+      <data key="d6">0.4964070910048546</data>
+      <data key="d7">0.5956885092058255</data>
+      <data key="d8">50.0</data>
+      <data key="d9">trunk</data>
+    </edge>
+    <edge source="19.0500,72.8710" target="19.0540,72.8750">
+      <data key="d2">ROAD_EEH_TO_LTT_0</data>
+      <data key="d3">ROAD_EEH_TO_LTT</data>
+      <data key="d4">EEH to LTT Hospital Bypass</data>
+      <data key="d5">INLET_LTT_CONNECTOR</data>
+      <data key="d6">0.627910821693864</data>
+      <data key="d7">0.7534929860326368</data>
+      <data key="d8">50.0</data>
+      <data key="d9">trunk</data>
+    </edge>
+    <edge source="19.0500,72.8710" target="19.0490,72.8680">
+      <data key="d2">ROAD_SION_FORT_CREST_3</data>
+      <data key="d3">ROAD_SION_FORT_CREST</data>
+      <data key="d4">Sion Fort Ridge Road (Elevated Safe Corridor)</data>
+      <data key="d5">INLET_SION_FORT</data>
+      <data key="d6">0.351012820278745</data>
+      <data key="d7">0.70202564055749</data>
+      <data key="d8">30.0</data>
+      <data key="d9">tertiary</data>
+    </edge>
+    <edge source="19.0510,72.8680" target="19.0535,72.8728">
+      <data key="d2">ROAD_LTT_CONNECTOR_1</data>
+      <data key="d3">ROAD_LTT_CONNECTOR</data>
+      <data key="d4">Kurla - LTT Hospital Route</data>
+      <data key="d5">INLET_LTT_CONNECTOR</data>
+      <data key="d6">0.6007346252717888</data>
+      <data key="d7">0.8009795003623851</data>
+      <data key="d8">45.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0535,72.8728" target="19.0728,72.8826">
+      <data key="d2">ROAD_LTT_CONNECTOR_2</data>
+      <data key="d3">ROAD_LTT_CONNECTOR</data>
+      <data key="d4">Kurla - LTT Hospital Route</data>
+      <data key="d5">INLET_LTT_CONNECTOR</data>
+      <data key="d6">2.4026564735725757</data>
+      <data key="d7">3.2035419647634344</data>
+      <data key="d8">45.0</data>
+      <data key="d9">primary</data>
+    </edge>
+    <edge source="19.0728,72.8826" target="19.0540,72.8750">
+      <data key="d2">ROAD_EEH_TO_LTT_1</data>
+      <data key="d3">ROAD_EEH_TO_LTT</data>
+      <data key="d4">EEH to LTT Hospital Bypass</data>
+      <data key="d5">INLET_LTT_CONNECTOR</data>
+      <data key="d6">2.250865433561154</data>
+      <data key="d7">2.701038520273385</data>
+      <data key="d8">50.0</data>
+      <data key="d9">trunk</data>
+    </edge>
+    <edge source="19.0440,72.8655" target="19.0465,72.8665">
+      <data key="d2">ROAD_SION_FORT_CREST_1</data>
+      <data key="d3">ROAD_SION_FORT_CREST</data>
+      <data key="d4">Sion Fort Ridge Road (Elevated Safe Corridor)</data>
+      <data key="d5">INLET_SION_FORT</data>
+      <data key="d6">0.29887664679629367</data>
+      <data key="d7">0.5977532935925873</data>
+      <data key="d8">30.0</data>
+      <data key="d9">tertiary</data>
+    </edge>
+    <edge source="19.0465,72.8665" target="19.0490,72.8680">
+      <data key="d2">ROAD_SION_FORT_CREST_2</data>
+      <data key="d3">ROAD_SION_FORT_CREST</data>
+      <data key="d4">Sion Fort Ridge Road (Elevated Safe Corridor)</data>
+      <data key="d5">INLET_SION_FORT</data>
+      <data key="d6">0.3236178301632952</data>
+      <data key="d7">0.6472356603265904</data>
+      <data key="d8">30.0</data>
+      <data key="d9">tertiary</data>
+    </edge>
+  </graph>
+</graphml>
