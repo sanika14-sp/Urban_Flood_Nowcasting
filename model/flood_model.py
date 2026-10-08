@@ -63,17 +63,24 @@ class FloodModel:
         with open(self.roads_path, "r", encoding="utf-8") as f:
             self.roads_geojson = json.load(f)
 
-    def run_simulation(self, rain_csv_path: str) -> list:
+    def run_simulation(self, rain_input) -> list:
         """
-        Runs the simulation across all time steps in the rainfall CSV.
+        Runs the simulation across all time steps in the rainfall CSV or DataFrame.
         Generates and saves GeoJSON depth layers for each time step.
         """
-        if not os.path.exists(rain_csv_path):
-            raise FileNotFoundError(f"Rainfall CSV not found at: {rain_csv_path}")
+        if isinstance(rain_input, pd.DataFrame):
+            df_rain = rain_input
+        elif isinstance(rain_input, str):
+            if not os.path.exists(rain_input):
+                raise FileNotFoundError(f"Rainfall CSV not found at: {rain_input}")
+            df_rain = pd.read_csv(rain_input)
+        elif isinstance(rain_input, list):
+            df_rain = pd.DataFrame(rain_input)
+        else:
+            raise ValueError("rain_input must be a CSV file path, pandas DataFrame, or list of records")
 
-        df_rain = pd.read_csv(rain_csv_path)
         if "time_min" not in df_rain.columns or "intensity_mm_per_hr" not in df_rain.columns:
-            raise ValueError("Rainfall CSV must have columns 'time_min' and 'intensity_mm_per_hr'")
+            raise ValueError("Rainfall input must have columns 'time_min' and 'intensity_mm_per_hr'")
 
         time_steps = df_rain.to_dict(orient="records")
 

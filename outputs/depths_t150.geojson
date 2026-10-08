@@ -2,8 +2,8 @@
   "type": "FeatureCollection",
   "metadata": {
     "time_min": 150,
-    "rain_intensity_mm_hr": 3.0,
-    "max_depth_cm": 75.7
+    "rain_intensity_mm_hr": 0.0,
+    "max_depth_cm": 54.1
   },
   "features": [
     {
@@ -33,12 +33,12 @@
         "base_speed_kmh": 30,
         "highway": "primary",
         "length_km": 0.404,
-        "depth_cm": 52.2,
-        "level": "Red",
-        "color": "#ef4444",
-        "status": "Avoid, impassable",
+        "depth_cm": 28.5,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 4.03
       }
@@ -70,12 +70,12 @@
         "base_speed_kmh": 25,
         "highway": "secondary",
         "length_km": 0.64,
-        "depth_cm": 42.4,
-        "level": "Red",
-        "color": "#ef4444",
-        "status": "Avoid, impassable",
+        "depth_cm": 23.0,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 4.0
       }
@@ -107,12 +107,12 @@
         "base_speed_kmh": 35,
         "highway": "primary",
         "length_km": 0.598,
-        "depth_cm": 23.5,
-        "level": "Orange",
-        "color": "#f97316",
-        "status": "Small vehicles at risk",
+        "depth_cm": 12.0,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 3.56
       }
@@ -149,7 +149,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": false,
         "elevation_m": 4.04
       }
@@ -181,12 +181,12 @@
         "base_speed_kmh": 20,
         "highway": "tertiary",
         "length_km": 0.41,
-        "depth_cm": 75.7,
+        "depth_cm": 54.1,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 5.9
       }
@@ -218,12 +218,12 @@
         "base_speed_kmh": 30,
         "highway": "secondary",
         "length_km": 0.471,
-        "depth_cm": 8.2,
+        "depth_cm": 8.0,
         "level": "Yellow",
         "color": "#f59e0b",
         "status": "Slow traffic",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 5.93
       }
@@ -255,12 +255,12 @@
         "base_speed_kmh": 35,
         "highway": "primary",
         "length_km": 0.568,
-        "depth_cm": 19.0,
-        "level": "Orange",
-        "color": "#f97316",
-        "status": "Small vehicles at risk",
+        "depth_cm": 8.6,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 6.85
       }
@@ -292,12 +292,12 @@
         "base_speed_kmh": 40,
         "highway": "primary",
         "length_km": 0.58,
-        "depth_cm": 63.7,
+        "depth_cm": 47.2,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 18.33
       }
@@ -329,12 +329,12 @@
         "base_speed_kmh": 30,
         "highway": "secondary",
         "length_km": 0.4,
-        "depth_cm": 18.1,
-        "level": "Orange",
-        "color": "#f97316",
-        "status": "Small vehicles at risk",
+        "depth_cm": 10.1,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 4.71
       }
@@ -370,12 +370,12 @@
         "base_speed_kmh": 50,
         "highway": "trunk",
         "length_km": 1.211,
-        "depth_cm": 54.8,
+        "depth_cm": 41.5,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 20.63
       }
@@ -411,12 +411,12 @@
         "base_speed_kmh": 45,
         "highway": "primary",
         "length_km": 3.451,
-        "depth_cm": 53.2,
+        "depth_cm": 40.0,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 9.22
       }
@@ -448,12 +448,12 @@
         "base_speed_kmh": 50,
         "highway": "trunk",
         "length_km": 2.879,
-        "depth_cm": 56.8,
+        "depth_cm": 42.7,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 8.47
       }
@@ -498,53 +498,9 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 150,
-        "rain_intensity_mm_hr": 3.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": false,
         "elevation_m": 23.59
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "HOTSPOT_INLET_SION_CIRCLE",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          72.8619,
-          19.039
-        ]
-      },
-      "properties": {
-        "id": "HOTSPOT_INLET_SION_CIRCLE",
-        "name": "Sion Circle Sump",
-        "depth_cm": 39.6,
-        "level": "Red",
-        "color": "#ef4444",
-        "status": "Avoid, impassable",
-        "time_min": 150,
-        "surcharge_rate_mm_hr": 37.1,
-        "is_hotspot": true
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "HOTSPOT_INLET_ROAD_24",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          72.857,
-          19.042
-        ]
-      },
-      "properties": {
-        "id": "HOTSPOT_INLET_ROAD_24",
-        "name": "Road No. 24 Drain",
-        "depth_cm": 32.1,
-        "level": "Red",
-        "color": "#ef4444",
-        "status": "Avoid, impassable",
-        "time_min": 150,
-        "surcharge_rate_mm_hr": 7.89,
-        "is_hotspot": true
       }
     }
   ]

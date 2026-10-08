@@ -296,3 +296,105 @@ class FloodRouter:
             "max_depth_on_route_cm": int(round(max_depth)),
             "route_geojson": route_geojson
         }
+
+    def calculate_route_comparison(self,
+                                   from_coords: list,
+                                   to_coords: list,
+                                   time_min: int = 60,
+                                   mode: str = "emergency") -> dict:
+        """
+        Calculates and compares both the dry-weather baseline route and the flood-safe route.
+        Shows detours, time differences, and water depths avoided.
+        """
+        safe_result = self.calculate_safe_route(from_coords, to_coords, time_min=time_min, mode=mode)
+        if "error" in safe_result:
+            return safe_result
+
+        start_lat, start_lon = from_coords
+        end_lat, end_lon = to_coords
+        start_node = self.find_nearest_node(start_lat, start_lon)
+        end_node = self.find_nearest_node(end_lat, end_lon)
+
+        try:
+            baseline_path = nx.shortest_path(self.G, start_node, end_node, weight="base_time_min")
+        except nx.NetworkXNoPath:
+            baseline_path = []
+
+        depths = self.load_depths_at_time(time_min)
+        dry_coords = []
+        dry_dist_km = 0.0
+        dry_time_min = 0.0
+        dry_max_depth = 0.0
+        dry_flooded_roads = []
+
+        for i in range(len(baseline_path) - 1):
+            u = baseline_path[i]
+            v = baseline_path[i+1]
+            data = self.G.get_edge_data(u, v)
+            rid = data["road_id"]
+            d_cm = depths.get(rid, 0.0)
+            dry_max_depth = max(dry_max_depth, d_cm)
+            dry_dist_km += data["dist_km"]
+            dry_time_min += data["base_time_min"]
+
+            if d_cm >= 15.0:
+                dry_flooded_roads.append({
+                    "name": data["name"],
+                    "depth_cm": round(d_cm, 1),
+                    "status": "Impassable" if d_cm > 30 else "High Risk"
+                })
+
+            for coord in data["coords"]:
+                if not dry_coords or dry_coords[-1] != coord:
+                    dry_coords.append(coord)
+
+        from_name = self.find_nearest_landmark_name(start_lat, start_lon)
+        to_name = self.find_nearest_landmark_name(end_lat, end_lon)
+
+        dry_geojson = {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": dry_coords
+            },
+            "properties": {
+                "from": from_name,
+                "to": to_name,
+                "type": "dry_baseline",
+                "distance_km": round(dry_dist_km, 2),
+                "estimated_time_min": int(round(dry_time_min)),
+                "max_depth_cm": round(dry_max_depth, 1)
+            }
+        }
+
+        detour_km = max(0.0, safe_result.get("route_distance_km", 0.0) - dry_dist_km)
+        time_penalty_min = max(0.0, safe_result.get("estimated_time_min", 0) - dry_time_min)
+        depth_saved_cm = max(0.0, dry_max_depth - safe_result.get("max_depth_on_route_cm", 0.0))
+
+        return {
+            "from": from_name,
+            "to": to_name,
+            "mode": mode,
+            "time_min": time_min,
+            "safe_route": safe_result,
+            "dry_route": {
+                "distance_km": round(dry_dist_km, 2),
+                "estimated_time_min": int(round(dry_time_min)),
+                "max_depth_cm": round(dry_max_depth, 1),
+                "flooded_segments": dry_flooded_roads,
+                "is_severely_flooded": dry_max_depth >= 30.0,
+                "route_geojson": dry_geojson
+            },
+            "comparison": {
+                "detour_km": round(detour_km, 2),
+                "time_penalty_min": round(time_penalty_min, 1),
+                "depth_saved_cm": round(depth_saved_cm, 1),
+                "is_reroute_recommended": dry_max_depth >= 15.0,
+                "message": (
+                    f"⚠️ Normal route hits {dry_max_depth:.0f}cm flood water! Reroute adds +{detour_km:.2f}km but keeps vehicle safe."
+                    if dry_max_depth >= 15.0 else
+                    "✓ Normal route is currently passable (< 15cm depth)."
+                )
+            }
+        }
+

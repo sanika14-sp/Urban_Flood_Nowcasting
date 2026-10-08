@@ -125,6 +125,67 @@ class TestUrbanFloodBackend(unittest.TestCase):
         self.assertIn("max_depth_cm", data_sum)
         self.assertIn("breakdown", data_sum)
 
+    def test_09_api_route_compare(self):
+        payload = {
+            "from": [19.0400, 72.8635],
+            "to": [19.0728, 72.8826],
+            "t": 60,
+            "mode": "emergency"
+        }
+        resp = self.client.post("/api/route/compare",
+                                data=json.dumps(payload),
+                                content_type="application/json")
+        self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.data)
+        self.assertIn("safe_route", data)
+        self.assertIn("dry_route", data)
+        self.assertIn("comparison", data)
+        self.assertIn("detour_km", data["comparison"])
+
+    def test_10_api_alerts(self):
+        resp = self.client.get("/api/alerts?t=60")
+        self.assertEqual(resp.status_code, 200)
+        data = json.loads(resp.data)
+        self.assertIn("overall_level", data)
+        self.assertIn("critical_roads", data)
+
+    def test_11_api_drain_reset_and_status(self):
+        # Status
+        resp_status = self.client.get("/api/drain/status")
+        self.assertEqual(resp_status.status_code, 200)
+        data_status = json.loads(resp_status.data)
+        self.assertIn("nodes", data_status)
+        self.assertIn("pipes", data_status)
+
+        # Reset
+        resp_reset = self.client.post("/api/drain/reset")
+        self.assertEqual(resp_reset.status_code, 200)
+        data_reset = json.loads(resp_reset.data)
+        self.assertEqual(data_reset["status"], "success")
+
+    def test_12_frontend_template_routes(self):
+        # Main GIS Map
+        resp_index = self.client.get("/")
+        self.assertEqual(resp_index.status_code, 200)
+        self.assertIn(b"Urban Flood Nowcasting", resp_index.data)
+        self.assertIn(b"leaflet", resp_index.data.lower())
+
+        # Routing Comparison Page
+        resp_routing = self.client.get("/routing")
+        self.assertEqual(resp_routing.status_code, 200)
+        self.assertIn(b"Flood-Safe Route Planner", resp_routing.data)
+
+        # Tester Console Page
+        resp_tester = self.client.get("/tester")
+        self.assertEqual(resp_tester.status_code, 200)
+        self.assertIn(b"Municipal Simulation Control Room", resp_tester.data)
+
+        # API Tester Page
+        resp_api_tester = self.client.get("/api-tester")
+        self.assertEqual(resp_api_tester.status_code, 200)
+        self.assertIn(b"REST API Test Console", resp_api_tester.data)
+
 
 if __name__ == "__main__":
     unittest.main()
+

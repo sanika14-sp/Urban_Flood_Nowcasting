@@ -79,6 +79,10 @@ class DrainageNetwork:
         else:
             self.blocked_items.pop(item_id, None)
 
+    def reset_blockages(self):
+        """Clears all active drain blockages."""
+        self.blocked_items.clear()
+
     def is_blocked(self, item_id: str) -> bool:
         return item_id in self.blocked_items
 

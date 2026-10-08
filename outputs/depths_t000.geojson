@@ -2,8 +2,8 @@
   "type": "FeatureCollection",
   "metadata": {
     "time_min": 0,
-    "rain_intensity_mm_hr": 10.0,
-    "max_depth_cm": 3.0
+    "rain_intensity_mm_hr": 8.0,
+    "max_depth_cm": 2.8
   },
   "features": [
     {
@@ -33,12 +33,12 @@
         "base_speed_kmh": 30,
         "highway": "primary",
         "length_km": 0.404,
-        "depth_cm": 3.0,
+        "depth_cm": 2.8,
         "level": "Green",
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 4.03
       }
@@ -70,12 +70,12 @@
         "base_speed_kmh": 25,
         "highway": "secondary",
         "length_km": 0.64,
-        "depth_cm": 0.6,
+        "depth_cm": 0.3,
         "level": "Green",
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 4.0
       }
@@ -112,7 +112,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 3.56
       }
@@ -149,7 +149,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 4.04
       }
@@ -186,7 +186,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 5.9
       }
@@ -223,7 +223,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 5.93
       }
@@ -255,12 +255,12 @@
         "base_speed_kmh": 35,
         "highway": "primary",
         "length_km": 0.568,
-        "depth_cm": 0.3,
+        "depth_cm": 0.2,
         "level": "Green",
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 6.85
       }
@@ -292,12 +292,12 @@
         "base_speed_kmh": 40,
         "highway": "primary",
         "length_km": 0.58,
-        "depth_cm": 1.2,
+        "depth_cm": 0.5,
         "level": "Green",
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 18.33
       }
@@ -334,7 +334,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 4.71
       }
@@ -370,12 +370,12 @@
         "base_speed_kmh": 50,
         "highway": "trunk",
         "length_km": 1.211,
-        "depth_cm": 0.4,
+        "depth_cm": 0.0,
         "level": "Green",
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 20.63
       }
@@ -416,7 +416,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 9.22
       }
@@ -453,7 +453,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 8.47
       }
@@ -498,7 +498,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 0,
-        "rain_intensity_mm_hr": 10.0,
+        "rain_intensity_mm_hr": 8.0,
         "surcharged": false,
         "elevation_m": 23.59
       }

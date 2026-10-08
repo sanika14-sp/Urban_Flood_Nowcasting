@@ -4,15 +4,16 @@ Serves flood forecasts, hotspots, safe routing, drain blockage simulation, and r
 """
 import os
 import json
+import numpy as np
 import pandas as pd
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS
 
 from model.flood_model import FloodModel
 from model.routing import FloodRouter
 from model.drainage import DrainageNetwork
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder="static", template_folder="templates")
 CORS(app)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -161,6 +162,27 @@ def post_route():
     return jsonify(route_result)
 
 
+@app.route("/api/route/compare", methods=["POST"])
+def post_route_compare():
+    """
+    POST /api/route/compare
+    Body: { "from": [lat, lng], "to": [lat, lng], "t": 60, "mode": "emergency" }
+    Returns side-by-side comparison of baseline dry-weather route vs flood-safe route.
+    """
+    body = request.get_json(force=True, silent=True) or {}
+    from_pt = body.get("from")
+    to_pt = body.get("to")
+    t = body.get("t", 60)
+    mode = body.get("mode", "emergency")
+
+    if not from_pt or not to_pt or len(from_pt) != 2 or len(to_pt) != 2:
+        return jsonify({"error": "Missing valid 'from' and 'to' [lat, lng] coordinates"}), 400
+
+    t_clamped = get_nearest_time_step(t)
+    comparison = router.calculate_route_comparison(from_pt, to_pt, time_min=t_clamped, mode=mode)
+    return jsonify(comparison)
+
+
 @app.route("/api/drain/block", methods=["POST"])
 def post_block_drain():
     """
@@ -190,6 +212,66 @@ def post_block_drain():
         "active_blockages": flood_model.drainage.blocked_items,
         "updated_forecast_files_count": len(generated_files),
         "message": f"Drain '{drain_id}' blockage updated. Forecast recomputed."
+    })
+
+
+@app.route("/api/drain/reset", methods=["POST"])
+def post_reset_drains():
+    """
+    POST /api/drain/reset
+    Clears all active drain blockages and re-runs the baseline flood model.
+    """
+    flood_model.drainage.reset_blockages()
+    generated_files = flood_model.run_simulation(RAINFALL_CSV)
+    return jsonify({
+        "status": "success",
+        "message": "All drain blockages cleared. Baseline forecasts restored.",
+        "active_blockages": {},
+        "updated_forecast_files_count": len(generated_files)
+    })
+
+
+@app.route("/api/drain/status", methods=["GET"])
+def get_drain_status():
+    """
+    GET /api/drain/status
+    Returns full operational list of drain nodes and pipes with blockage details.
+    """
+    all_nodes = flood_model.drainage.get_all_nodes()
+    all_pipes = flood_model.drainage.get_all_pipes()
+
+    nodes_list = []
+    for nid, data in all_nodes.items():
+        blocked = flood_model.drainage.is_blocked(nid)
+        nodes_list.append({
+            "id": nid,
+            "name": data.get("name", nid),
+            "type": data.get("type", "inlet"),
+            "ponding_area_m2": data.get("ponding_area_m2", 1500),
+            "coords": data.get("coords", []),
+            "is_blocked": blocked,
+            "reduction": flood_model.drainage.blocked_items.get(nid, 0.0)
+        })
+
+    pipes_list = []
+    for pid, data in all_pipes.items():
+        blocked = flood_model.drainage.is_blocked(pid)
+        pipes_list.append({
+            "id": pid,
+            "from_node": data.get("from_node"),
+            "to_node": data.get("to_node"),
+            "base_capacity": data.get("base_capacity", 45.0),
+            "diameter_m": data.get("diameter_m", 1.2),
+            "is_blocked": blocked,
+            "reduction": flood_model.drainage.blocked_items.get(pid, 0.0)
+        })
+
+    return jsonify({
+        "total_nodes": len(nodes_list),
+        "total_pipes": len(pipes_list),
+        "active_blocked_count": len(flood_model.drainage.blocked_items),
+        "nodes": nodes_list,
+        "pipes": pipes_list
     })
 
 
@@ -297,25 +379,196 @@ def get_summary():
     })
 
 
+@app.route("/api/alerts", methods=["GET"])
+def get_alerts():
+    """
+    GET /api/alerts?t=<minutes>
+    Returns real-time citizen & emergency alerts for severely waterlogged roads and low spots.
+    """
+    t_query = request.args.get("t", default=60, type=int)
+    t = get_nearest_time_step(t_query)
+    filename = f"depths_t{t:03d}.geojson"
+    file_path = os.path.join(OUTPUTS_DIR, filename)
+
+    if not os.path.exists(file_path):
+        flood_model.run_simulation(RAINFALL_CSV)
+
+    with open(file_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    features = data.get("features", [])
+    critical_inundations = []
+    moderate_inundations = []
+
+    for feat in features:
+        props = feat.get("properties", {})
+        depth = float(props.get("depth_cm", 0.0))
+        name = props.get("name", "Unknown Road")
+        if depth >= 30.0:
+            critical_inundations.append({"name": name, "depth_cm": round(depth, 1), "level": "RED"})
+        elif depth >= 15.0:
+            moderate_inundations.append({"name": name, "depth_cm": round(depth, 1), "level": "ORANGE"})
+
+    if critical_inundations:
+        alert_level = "RED ALERT"
+        color = "#ef4444"
+        message = f"Severe flooding at {len(critical_inundations)} locations including {critical_inundations[0]['name']} ({critical_inundations[0]['depth_cm']}cm). Evacuate/divert traffic."
+    elif moderate_inundations:
+        alert_level = "ORANGE WARNING"
+        color = "#f97316"
+        message = f"Waterlogging detected at {len(moderate_inundations)} locations. Small vehicles and two-wheelers advise caution."
+    else:
+        alert_level = "GREEN CLEAR"
+        color = "#10b981"
+        message = "Road network currently passable. All monitored sectors clear."
+
+    return jsonify({
+        "time_min": t,
+        "overall_level": alert_level,
+        "color": color,
+        "message": message,
+        "critical_count": len(critical_inundations),
+        "moderate_count": len(moderate_inundations),
+        "critical_roads": critical_inundations,
+        "moderate_roads": moderate_inundations,
+        "active_blockages_count": len(flood_model.drainage.blocked_items),
+        "timestamp_issued": f"Nowcast +{t}m"
+    })
+
+
+@app.route("/api/simulate", methods=["POST"])
+def post_simulate():
+    """
+    POST /api/simulate
+    Body: { "storm_type": "cloudburst"|"heavy_monsoon"|"moderate"|"custom", "peak_intensity": 100.0, "duration_min": 180 }
+    Simulates custom storm scenario and recomputes all nowcast forecast GeoJSONs.
+    """
+    body = request.get_json(force=True, silent=True) or {}
+    storm_type = body.get("storm_type", "heavy_monsoon")
+    peak = float(body.get("peak_intensity", 75.0))
+    duration = int(body.get("duration_min", 180))
+
+    times = list(range(0, duration + 15, 15))
+    t_peak = duration * 0.35
+    records = []
+    for t in times:
+        if storm_type == "cloudburst":
+            sigma = 20.0
+            intensity = peak * np.exp(-((t - 45) ** 2) / (2 * (sigma ** 2)))
+        elif storm_type == "moderate":
+            sigma = 45.0
+            intensity = (peak * 0.6) * np.exp(-((t - 60) ** 2) / (2 * (sigma ** 2)))
+        else:
+            sigma = 35.0
+            intensity = peak * np.exp(-((t - t_peak) ** 2) / (2 * (sigma ** 2)))
+        records.append({"time_min": t, "intensity_mm_per_hr": round(float(max(0.0, intensity)), 1)})
+
+    df_scenario = pd.DataFrame(records)
+    generated_files = flood_model.run_simulation(df_scenario)
+
+    return jsonify({
+        "status": "success",
+        "storm_type": storm_type,
+        "peak_intensity_mm_hr": peak,
+        "duration_minutes": duration,
+        "timesteps_computed": len(generated_files),
+        "rainfall_schedule": records,
+        "message": f"Simulation complete for {storm_type} (peak {peak} mm/h). {len(generated_files)} timesteps updated."
+    })
+
+
+@app.route("/api/status", methods=["GET"])
+def get_system_status():
+    """GET /api/status - Returns system diagnostics, active models, and pilot boundary."""
+    return jsonify({
+        "system": "Urban Flood Nowcasting Engine",
+        "version": "1.0.0",
+        "status": "online",
+        "pilot_area": {
+            "name": "Sion, Mumbai",
+            "bounds": {"west": 72.850, "south": 19.030, "east": 72.875, "north": 19.055},
+            "resolution_m": 30
+        },
+        "active_blockages": list(flood_model.drainage.blocked_items.keys()),
+        "available_lead_times_min": list(range(0, 195, 15))
+    })
+
+
+@app.route("/api/stats/drainage", methods=["GET"])
+def get_drainage_stats():
+    """GET /api/stats/drainage - Drainage network performance and capacity stats."""
+    drains_path = os.path.join(DATA_DIR, "drains.geojson")
+    with open(drains_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    nodes = [f for f in data.get("features", []) if f.get("properties", {}).get("feature_class") == "drain_node"]
+    pipes = [f for f in data.get("features", []) if f.get("properties", {}).get("feature_class") == "drain_pipe"]
+
+    blocked_nodes = [n["id"] for n in nodes if flood_model.drainage.is_blocked(n["id"])]
+    blocked_pipes = [p["id"] for p in pipes if flood_model.drainage.is_blocked(p["id"])]
+
+    return jsonify({
+        "total_nodes": len(nodes),
+        "total_pipes": len(pipes),
+        "blocked_nodes": blocked_nodes,
+        "blocked_pipes": blocked_pipes,
+        "blockage_count": len(flood_model.drainage.blocked_items),
+        "outfalls": ["OUTFALL_MAHIM_1", "OUTFALL_MAHIM_2", "OUTFALL_MAHIM_3"],
+        "pilot_capacity_nominal_mm_hr": 45.0
+    })
+
+
+# -------------------------------------------------------------
+# Frontend Page Routes (Templates)
+# -------------------------------------------------------------
 @app.route("/", methods=["GET"])
 def index():
-    """Serves index.html if frontend is present, or returns API information."""
-    index_file = os.path.join(app.static_folder, "index.html") if app.static_folder else None
-    if index_file and os.path.exists(index_file):
-        return send_from_directory(app.static_folder, "index.html")
+    """Serves the main interactive GIS Map Dashboard."""
+    return render_template("index.html")
+
+
+@app.route("/tester", methods=["GET"])
+def tester_page():
+    """Serves the Municipal Engineer & Simulation Control Room."""
+    return render_template("tester.html")
+
+
+@app.route("/routing", methods=["GET"])
+def routing_page():
+    """Serves the Flood-Safe Route Comparison & Evacuation page."""
+    return render_template("routing.html")
+
+
+@app.route("/api-tester", methods=["GET"])
+@app.route("/api-test", methods=["GET"])
+def api_tester_page():
+    """Serves the REST API Test Console."""
+    return render_template("api_tester.html")
+
+
+@app.route("/api", methods=["GET"])
+def api_directory():
+    """Returns directory of all REST API endpoints."""
     return jsonify({
         "name": "Urban Flood Nowcasting System API",
         "status": "online",
         "pilot_area": "Sion, Mumbai",
         "endpoints": [
+            "GET /api/summary?t=<minutes>",
             "GET /api/forecast?t=<minutes>",
             "GET /api/hotspots?t=<minutes>&min_depth=15",
             "POST /api/route",
+            "POST /api/route/compare",
             "POST /api/drain/block",
+            "POST /api/drain/reset",
+            "GET /api/drain/status",
             "GET /api/rainfall",
+            "POST /api/simulate",
+            "GET /api/alerts?t=<minutes>",
+            "GET /api/stats/drainage",
             "GET /api/drains",
             "GET /api/roads",
-            "GET /api/summary?t=<minutes>"
+            "GET /api/status"
         ]
     })
 

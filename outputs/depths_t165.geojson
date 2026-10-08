@@ -2,8 +2,8 @@
   "type": "FeatureCollection",
   "metadata": {
     "time_min": 165,
-    "rain_intensity_mm_hr": 1.0,
-    "max_depth_cm": 73.4
+    "rain_intensity_mm_hr": 0.0,
+    "max_depth_cm": 51.8
   },
   "features": [
     {
@@ -33,12 +33,12 @@
         "base_speed_kmh": 30,
         "highway": "primary",
         "length_km": 0.404,
-        "depth_cm": 49.5,
-        "level": "Red",
-        "color": "#ef4444",
-        "status": "Avoid, impassable",
+        "depth_cm": 25.9,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 4.03
       }
@@ -70,12 +70,12 @@
         "base_speed_kmh": 25,
         "highway": "secondary",
         "length_km": 0.64,
-        "depth_cm": 39.8,
-        "level": "Red",
-        "color": "#ef4444",
-        "status": "Avoid, impassable",
+        "depth_cm": 20.3,
+        "level": "Orange",
+        "color": "#f97316",
+        "status": "Small vehicles at risk",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 4.0
       }
@@ -107,12 +107,12 @@
         "base_speed_kmh": 35,
         "highway": "primary",
         "length_km": 0.598,
-        "depth_cm": 20.7,
-        "level": "Orange",
-        "color": "#f97316",
-        "status": "Small vehicles at risk",
+        "depth_cm": 9.2,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 3.56
       }
@@ -149,7 +149,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": false,
         "elevation_m": 4.04
       }
@@ -181,12 +181,12 @@
         "base_speed_kmh": 20,
         "highway": "tertiary",
         "length_km": 0.41,
-        "depth_cm": 73.4,
+        "depth_cm": 51.8,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 5.9
       }
@@ -218,12 +218,12 @@
         "base_speed_kmh": 30,
         "highway": "secondary",
         "length_km": 0.471,
-        "depth_cm": 5.9,
+        "depth_cm": 5.7,
         "level": "Yellow",
         "color": "#f59e0b",
         "status": "Slow traffic",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 5.93
       }
@@ -255,12 +255,12 @@
         "base_speed_kmh": 35,
         "highway": "primary",
         "length_km": 0.568,
-        "depth_cm": 16.8,
-        "level": "Orange",
-        "color": "#f97316",
-        "status": "Small vehicles at risk",
+        "depth_cm": 6.4,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 6.85
       }
@@ -292,12 +292,12 @@
         "base_speed_kmh": 40,
         "highway": "primary",
         "length_km": 0.58,
-        "depth_cm": 62.5,
+        "depth_cm": 46.0,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 18.33
       }
@@ -329,12 +329,12 @@
         "base_speed_kmh": 30,
         "highway": "secondary",
         "length_km": 0.4,
-        "depth_cm": 15.6,
-        "level": "Orange",
-        "color": "#f97316",
-        "status": "Small vehicles at risk",
+        "depth_cm": 7.6,
+        "level": "Yellow",
+        "color": "#f59e0b",
+        "status": "Slow traffic",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 4.71
       }
@@ -370,12 +370,12 @@
         "base_speed_kmh": 50,
         "highway": "trunk",
         "length_km": 1.211,
-        "depth_cm": 53.6,
+        "depth_cm": 40.3,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 20.63
       }
@@ -411,12 +411,12 @@
         "base_speed_kmh": 45,
         "highway": "primary",
         "length_km": 3.451,
-        "depth_cm": 51.4,
+        "depth_cm": 38.2,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 9.22
       }
@@ -448,12 +448,12 @@
         "base_speed_kmh": 50,
         "highway": "trunk",
         "length_km": 2.879,
-        "depth_cm": 54.8,
+        "depth_cm": 40.8,
         "level": "Red",
         "color": "#ef4444",
         "status": "Avoid, impassable",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": true,
         "elevation_m": 8.47
       }
@@ -498,7 +498,7 @@
         "color": "#10b981",
         "status": "Passable",
         "time_min": 165,
-        "rain_intensity_mm_hr": 1.0,
+        "rain_intensity_mm_hr": 0.0,
         "surcharged": false,
         "elevation_m": 23.59
       }
