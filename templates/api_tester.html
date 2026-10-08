@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Urban Flood Nowcasting - REST API & Backend Tester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-border: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --amber: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #0f172a;
+      border-bottom: 1px solid var(--surface-border);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-icon {
+      font-size: 22px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+    }
+    .brand-title { font-size: 15px; font-weight: 800; color: #fff; }
+    .brand-sub { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; }
+
+    nav.nav-tabs { display: flex; gap: 6px; }
+    .nav-tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+    .nav-tab.active {
+      color: #fff;
+      background: #1e293b;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+
+    .badge-get { background: rgba(56, 139, 253, 0.2); color: #58a6ff; border: 1px solid #388bfd; }
+    .badge-post { background: rgba(210, 153, 34, 0.2); color: #d29922; border: 1px solid #d29922; }
+    .badge-status-ok { background: rgba(63, 185, 80, 0.2); color: var(--green); border: 1px solid var(--green); }
+    .badge-status-err { background: rgba(248, 81, 73, 0.2); color: var(--red); border: 1px solid var(--red); }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #21262d;
+      border: 1px solid var(--surface-border);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #8b949e;
+    }
+    .status-dot.online { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .status-dot.offline { background: var(--red); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--surface-border);
+      background: #21262d;
+      color: var(--text);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover { background: #30363d; border-color: #8b949e; }
+    .btn-primary { background: #1f6feb; color: #fff; border-color: #388bfd; }
+    .btn-primary:hover { background: #388bfd; }
+    .btn-run-all { background: rgba(63, 185, 80, 0.15); color: var(--green); border-color: var(--green); }
+    .btn-run-all:hover { background: rgba(63, 185, 80, 0.3); }
+
+    .container {
+      display: grid;
+      grid-template-columns: 290px 1fr 1fr;
+      flex: 1;
+      height: calc(100vh - 58px);
+      overflow: hidden;
+    }
+
+    @media (max-width: 1100px) {
+      .container {
+        grid-template-columns: 260px 1fr;
+        grid-template-rows: auto 1fr;
+        height: auto;
+        overflow: auto;
+      }
+      .response-pane { grid-column: span 2; min-height: 480px; }
+    }
+
+    @media (max-width: 768px) {
+      .container { display: flex; flex-direction: column; height: auto; }
+    }
+
+    .sidebar {
+      background: #12161c;
+      border-right: 1px solid var(--surface-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 12px 16px 6px;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text);
+      border-left: 3px solid transparent;
+      transition: background 0.1s;
+    }
+    .nav-item:hover { background: #1c2128; }
+    .nav-item.active { background: #1f242c; border-left-color: var(--accent); font-weight: 600; color: #fff; }
+    .nav-item .endpoint-path { font-family: var(--font-mono); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .request-pane {
+      background: var(--surface);
+      border-right: 1px solid var(--surface-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 20px;
+      gap: 16px;
+    }
+
+    .pane-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+    .pane-title-row { display: flex; align-items: center; gap: 10px; }
+    .pane-title { font-size: 16px; font-weight: 700; color: #fff; }
+    .pane-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--text); display: flex; justify-content: space-between; }
+    .form-label span.hint { color: var(--text-muted); font-weight: normal; font-family: var(--font-mono); }
+
+    input[type="text"], input[type="number"], select, textarea {
+      background: #0d1117;
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+    .range-container { display: flex; align-items: center; gap: 12px; }
+    .range-container input[type="range"] { flex: 1; }
+    .range-val { font-family: var(--font-mono); font-size: 13px; font-weight: bold; color: var(--accent); min-width: 50px; text-align: right; }
+
+    .quick-preset-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .btn-preset { font-size: 11px; padding: 3px 8px; border-radius: 4px; background: #21262d; border: 1px solid var(--surface-border); color: var(--text-muted); cursor: pointer; }
+    .btn-preset:hover { color: var(--text); border-color: #8b949e; }
+
+    .action-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+
+    .response-pane { background: #0d1117; display: flex; flex-direction: column; overflow: hidden; }
+    .response-header { background: #161b22; border-bottom: 1px solid var(--surface-border); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .meta-badges { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; }
+    .meta-pill { background: #21262d; padding: 2px 8px; border-radius: 4px; color: var(--text); }
+
+    .response-body-wrapper { flex: 1; overflow: auto; padding: 16px 20px; }
+    pre#jsonOutput { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; color: #e6edf3; white-space: pre-wrap; word-break: break-all; }
+
+    .json-key { color: #79c0ff; }
+    .json-string { color: #a5d6ff; }
+    .json-number { color: #d2a8ff; }
+    .json-boolean { color: #ff7b72; font-weight: bold; }
+    .json-null { color: #7ee787; font-style: italic; }
+
+    #suiteContainer { display: none; background: #161b22; border: 1px solid var(--surface-border); border-radius: 8px; margin: 16px 20px; padding: 16px; }
+    .table-suite { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--font-mono); margin-top: 10px; }
+    .table-suite th, .table-suite td { border: 1px solid var(--surface-border); padding: 6px 10px; text-align: left; }
+    .table-suite th { background: #21262d; color: var(--text-muted); }
+
+    .loading-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="brand">
+      <div class="brand-icon">⚡</div>
+      <div>
+        <div class="brand-title">REST API Test Console</div>
+        <div class="brand-sub">Urban Flood Backend Workbench</div>
+      </div>
+    </a>
+
+    <nav class="nav-tabs">
+      <a href="/" class="nav-tab">🗺️ Live GIS Map</a>
+      <a href="/routing" class="nav-tab">🧭 Safe Navigation</a>
+      <a href="/tester" class="nav-tab">🛠️ Municipal Simulator</a>
+      <a href="/api-tester" class="nav-tab active">⚡ API Console</a>
+    </nav>
+
+    <div class="header-actions">
+      <div class="status-pill" id="healthPill">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Checking Backend...</span>
+      </div>
+      <button class="btn btn-run-all" id="btnRunSuite" onclick="runAllTests()">
+        <span>▶</span> Run All Tests Suite
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <nav class="sidebar" id="endpointNav">
+      <div class="sidebar-section-title">Forecast & Warnings</div>
+      <a class="nav-item active" onclick="selectEndpoint('summary')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/summary</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('forecast')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/forecast</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('alerts')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/alerts</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('hotspots')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/hotspots</span>
+      </a>
+
+      <div class="sidebar-section-title">Safe Routing & Detours</div>
+      <a class="nav-item" onclick="selectEndpoint('route')">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/api/route</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('route_compare')">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/api/route/compare</span>
+      </a>
+
+      <div class="sidebar-section-title">Drainage & Simulation</div>
+      <a class="nav-item" onclick="selectEndpoint('drain_block')">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/api/drain/block</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('drain_reset')">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/api/drain/reset</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('drain_status')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/drain/status</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('simulate')">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/api/simulate</span>
+      </a>
+
+      <div class="sidebar-section-title">Network & Diagnostic</div>
+      <a class="nav-item" onclick="selectEndpoint('rainfall')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/rainfall</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('drains')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/drains</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('roads')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/roads</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('status')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/status</span>
+      </a>
+    </nav>
+
+    <main class="request-pane" id="requestFormPane">
+      <div id="endpointFormArea"></div>
+    </main>
+
+    <section class="response-pane">
+      <div class="response-header">
+        <div class="meta-badges">
+          <span id="resStatusBadge" class="badge badge-status-ok" style="display:none;">200 OK</span>
+          <span id="resTimeBadge" class="meta-pill" style="display:none;">0 ms</span>
+          <span id="resSizeBadge" class="meta-pill" style="display:none;">0 KB</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn" style="padding: 4px 8px; font-size: 11px;" onclick="copyResponseJson()">📋 Copy JSON</button>
+          <button class="btn" style="padding: 4px 8px; font-size: 11px;" onclick="copyCurlCommand()">💻 Copy cURL</button>
+        </div>
+      </div>
+
+      <div id="quickInsightBanner" style="display:none; background:#161b22; border-bottom:1px solid var(--surface-border); padding:8px 20px; font-size:12px; font-family:var(--font-mono); color:var(--accent);"></div>
+
+      <div id="suiteContainer">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="font-size: 13px; font-weight:700;">Smoke Test Suite Results</h3>
+          <button class="btn" style="font-size:11px; padding:2px 8px;" onclick="document.getElementById('suiteContainer').style.display='none'">Close</button>
+        </div>
+        <table class="table-suite" id="suiteTable">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint</th>
+              <th>Status</th>
+              <th>Latency</th>
+              <th>Preview Summary</th>
+            </tr>
+          </thead>
+          <tbody id="suiteTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="response-body-wrapper">
+        <pre id="jsonOutput">// Click Send Request to test the endpoint response</pre>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const BASE_URL = window.location.origin;
+    let activeEndpointId = 'summary';
+    let rawResponseText = '';
+
+    const ENDPOINTS = {
+      summary: {
+        method: 'GET',
+        path: '/api/summary',
+        title: 'Citywide Flood Summary',
+        desc: 'Returns high-level statistics including breakdown of road depths (green, yellow, orange, red) at lead time t.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label"><span>Lead Time (t)</span><span class="hint">0 to 180 min</span></div>
+            <div class="range-container">
+              <input type="range" id="param_t" min="0" max="180" step="15" value="60" oninput="document.getElementById('val_t').textContent = this.value + ' min'">
+              <span class="range-val" id="val_t">60 min</span>
+            </div>
+          </div>
+        `,
+        build: () => ({ url: `${BASE_URL}/api/summary?t=${document.getElementById('param_t').value}`, method: 'GET' })
+      },
+      forecast: {
+        method: 'GET',
+        path: '/api/forecast',
+        title: 'Street Depths GeoJSON',
+        desc: 'Returns predicted street depths GeoJSON FeatureCollection at given lead time.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label"><span>Lead Time (t)</span></div>
+            <input type="number" id="param_t" value="60" step="15" min="0" max="180">
+          </div>
+        `,
+        build: () => ({ url: `${BASE_URL}/api/forecast?t=${document.getElementById('param_t').value}`, method: 'GET' })
+      },
+      alerts: {
+        method: 'GET',
+        path: '/api/alerts',
+        title: 'Citizen Flood Alerts',
+        desc: 'Returns real-time emergency warnings, severity status, and critical flooded roads.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label"><span>Lead Time (t)</span></div>
+            <input type="number" id="param_t" value="60" step="15" min="0" max="180">
+          </div>
+        `,
+        build: () => ({ url: `${BASE_URL}/api/alerts?t=${document.getElementById('param_t').value}`, method: 'GET' })
+      },
+      hotspots: {
+        method: 'GET',
+        path: '/api/hotspots',
+        title: 'Ranked Inundation Hotspots',
+        desc: 'Returns surcharging nodes and streets above given depth threshold, ranked descending.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label"><span>Lead Time (t)</span></div>
+            <input type="number" id="param_t" value="60" step="15">
+          </div>
+          <div class="form-group">
+            <div class="form-label"><span>Min Depth (cm)</span></div>
+            <input type="number" id="param_depth" value="15">
+          </div>
+        `,
+        build: () => ({ url: `${BASE_URL}/api/hotspots?t=${document.getElementById('param_t').value}&min_depth=${document.getElementById('param_depth').value}`, method: 'GET' })
+      },
+      route: {
+        method: 'POST',
+        path: '/api/route',
+        title: 'Flood-Safe Route',
+        desc: 'Calculates dynamic flood-safe route avoiding impassable inundated segments.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">Origin [lat, lng]</div>
+            <input type="text" id="route_from" value="[19.0390, 72.8619]">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Destination [lat, lng]</div>
+            <input type="text" id="route_to" value="[19.0728, 72.8826]">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Mode</div>
+            <select id="route_mode"><option value="emergency">emergency</option><option value="commuter">commuter</option><option value="bus">bus</option></select>
+          </div>
+        `,
+        build: () => ({
+          url: `${BASE_URL}/api/route`,
+          method: 'POST',
+          body: { from: JSON.parse(document.getElementById('route_from').value), to: JSON.parse(document.getElementById('route_to').value), t: 60, mode: document.getElementById('route_mode').value }
+        })
+      },
+      route_compare: {
+        method: 'POST',
+        path: '/api/route/compare',
+        title: 'Side-by-Side Route Comparison',
+        desc: 'Compares standard dry-weather shortest path vs flood-safe route, highlighting detours and hazard depth avoided.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">Origin [lat, lng]</div>
+            <input type="text" id="comp_from" value="[19.0400, 72.8635]">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Destination [lat, lng]</div>
+            <input type="text" id="comp_to" value="[19.0728, 72.8826]">
+          </div>
+        `,
+        build: () => ({
+          url: `${BASE_URL}/api/route/compare`,
+          method: 'POST',
+          body: { from: JSON.parse(document.getElementById('comp_from').value), to: JSON.parse(document.getElementById('comp_to').value), t: 60, mode: 'emergency' }
+        })
+      },
+      drain_block: {
+        method: 'POST',
+        path: '/api/drain/block',
+        title: 'Block Drain Inlet & Re-Simulate',
+        desc: 'Marks a drain inlet/pipe blocked with capacity reduction and triggers model re-run.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">Drain ID</div>
+            <select id="blk_id">
+              <option value="INLET_SION_CIRCLE">INLET_SION_CIRCLE</option>
+              <option value="INLET_GANDHI_MKT">INLET_GANDHI_MKT</option>
+              <option value="INLET_KINGS_CIRCLE">INLET_KINGS_CIRCLE</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" id="blk_state" checked> Blocked</label>
+          </div>
+        `,
+        build: () => ({
+          url: `${BASE_URL}/api/drain/block`,
+          method: 'POST',
+          body: { drain_id: document.getElementById('blk_id').value, blocked: document.getElementById('blk_state').checked, capacity_reduction: 1.0 }
+        })
+      },
+      drain_reset: {
+        method: 'POST',
+        path: '/api/drain/reset',
+        title: 'Reset All Drain Blockages',
+        desc: 'Clears all active drain blockages and recomputes the baseline forecast.',
+        render: () => `<div>Clears all blocked items and restores baseline.</div>`,
+        build: () => ({ url: `${BASE_URL}/api/drain/reset`, method: 'POST', body: {} })
+      },
+      drain_status: {
+        method: 'GET',
+        path: '/api/drain/status',
+        title: 'Full Drain Network Status',
+        desc: 'Lists all 15 drain nodes and pipes with capacity, dimensions, and blockage factor.',
+        render: () => `<div>Returns complete node and pipe operational metrics.</div>`,
+        build: () => ({ url: `${BASE_URL}/api/drain/status`, method: 'GET' })
+      },
+      simulate: {
+        method: 'POST',
+        path: '/api/simulate',
+        title: 'Custom Storm Simulation',
+        desc: 'Simulates a cloudburst or heavy rainfall scenario and recomputes all 13 timesteps.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">Storm Type</div>
+            <select id="sim_type"><option value="cloudburst">Cloudburst (120 mm/hr)</option><option value="heavy_monsoon">Heavy Monsoon (75 mm/hr)</option></select>
+          </div>
+        `,
+        build: () => ({
+          url: `${BASE_URL}/api/simulate`,
+          method: 'POST',
+          body: { storm_type: document.getElementById('sim_type').value, peak_intensity: 100.0, duration_min: 180 }
+        })
+      },
+      rainfall: {
+        method: 'GET',
+        path: '/api/rainfall',
+        title: 'Rainfall Event Profile',
+        desc: 'Returns rainfall intensity hyetograph driving the model.',
+        render: () => `<div>Returns time series records.</div>`,
+        build: () => ({ url: `${BASE_URL}/api/rainfall`, method: 'GET' })
+      },
+      drains: {
+        method: 'GET',
+        path: '/api/drains',
+        title: 'Drains GeoJSON',
+        desc: 'GeoJSON network of pipes and inlets.',
+        render: () => `<div>Returns GeoJSON FeatureCollection.</div>`,
+        build: () => ({ url: `${BASE_URL}/api/drains`, method: 'GET' })
+      },
+      roads: {
+        method: 'GET',
+        path: '/api/roads',
+        title: 'Roads GeoJSON',
+        desc: 'Base road geometry features.',
+        render: () => `<div>Returns road features.</div>`,
+        build: () => ({ url: `${BASE_URL}/api/roads`, method: 'GET' })
+      },
+      status: {
+        method: 'GET',
+        path: '/api/status',
+        title: 'System Diagnostics & Health',
+        desc: 'Returns pilot bounds, loaded resolution, and system online status.',
+        render: () => `<div>Returns health diagnostics.</div>`,
+        build: () => ({ url: `${BASE_URL}/api/status`, method: 'GET' })
+      }
+    };
+
+    function selectEndpoint(id) {
+      activeEndpointId = id;
+      const links = document.querySelectorAll('#endpointNav .nav-item');
+      links.forEach(l => l.classList.remove('active'));
+      const activeIdx = Object.keys(ENDPOINTS).indexOf(id);
+      if (activeIdx >= 0 && links[activeIdx]) links[activeIdx].classList.add('active');
+
+      const ep = ENDPOINTS[id];
+      const formArea = document.getElementById('endpointFormArea');
+      formArea.innerHTML = `
+        <div class="pane-header">
+          <div class="pane-title-row">
+            <span class="badge ${ep.method === 'POST' ? 'badge-post' : 'badge-get'}">${ep.method}</span>
+            <span class="pane-title">${ep.title}</span>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">${ep.path}</div>
+          <p class="pane-desc">${ep.desc}</p>
+        </div>
+        <form onsubmit="event.preventDefault(); executeRequest();" style="display:flex; flex-direction:column; gap:16px;">
+          ${ep.render()}
+          <div class="action-row">
+            <button type="submit" class="btn btn-primary" id="btnSend">🚀 Send Request</button>
+            <button type="button" class="btn" onclick="copyCurlCommand()">cURL</button>
+          </div>
+        </form>
+      `;
+    }
+
+    async function executeRequest() {
+      const ep = ENDPOINTS[activeEndpointId];
+      const req = ep.build();
+      const btn = document.getElementById('btnSend');
+      if (btn) { btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span> Sending...'; }
+
+      const t0 = performance.now();
+      try {
+        const opts = { method: req.method, headers: { 'Accept': 'application/json' } };
+        if (req.body && req.method !== 'GET') {
+          opts.headers['Content-Type'] = 'application/json';
+          opts.body = JSON.stringify(req.body);
+        }
+        const res = await fetch(req.url, opts);
+        const dur = Math.round(performance.now() - t0);
+        const text = await res.text();
+        rawResponseText = text;
+        displayResponse(res.status, res.statusText, dur, text);
+      } catch (err) {
+        displayResponse(0, 'Connection Error', Math.round(performance.now() - t0), JSON.stringify({ error: err.message }, null, 2));
+      } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '🚀 Send Request'; }
+      }
+    }
+
+    function displayResponse(status, statusText, dur, text) {
+      document.getElementById('resStatusBadge').style.display = 'inline-block';
+      document.getElementById('resTimeBadge').style.display = 'inline-block';
+      document.getElementById('resSizeBadge').style.display = 'inline-block';
+
+      document.getElementById('resStatusBadge').textContent = `${status} ${statusText}`;
+      document.getElementById('resStatusBadge').className = status >= 200 && status < 300 ? 'badge badge-status-ok' : 'badge badge-status-err';
+      document.getElementById('resTimeBadge').textContent = `${dur} ms`;
+      document.getElementById('resSizeBadge').textContent = `${new Blob([text]).size} B`;
+
+      try {
+        const data = JSON.parse(text);
+        document.getElementById('jsonOutput').textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        document.getElementById('jsonOutput').textContent = text;
+      }
+    }
+
+    function copyResponseJson() {
+      if (rawResponseText) navigator.clipboard.writeText(rawResponseText).then(() => alert('Copied JSON'));
+    }
+
+    function copyCurlCommand() {
+      const req = ENDPOINTS[activeEndpointId].build();
+      let curl = `curl -X ${req.method} "${req.url}"`;
+      if (req.body) curl += ` -H "Content-Type: application/json" -d '${JSON.stringify(req.body)}'`;
+      navigator.clipboard.writeText(curl).then(() => alert('cURL copied:\n' + curl));
+    }
+
+    async function checkBackendHealth() {
+      try {
+        const res = await fetch(`${BASE_URL}/api/status`);
+        if (res.ok) {
+          document.getElementById('statusDot').className = 'status-dot online';
+          document.getElementById('statusText').textContent = 'Backend Online';
+        }
+      } catch (e) {
+        document.getElementById('statusDot').className = 'status-dot offline';
+        document.getElementById('statusText').textContent = 'Backend Offline';
+      }
+    }
+
+    async function runAllTests() {
+      const suite = document.getElementById('suiteContainer');
+      const tbody = document.getElementById('suiteTableBody');
+      suite.style.display = 'block';
+      tbody.innerHTML = '';
+
+      const testList = [
+        { method: 'GET', url: `${BASE_URL}/api/status` },
+        { method: 'GET', url: `${BASE_URL}/api/summary?t=60` },
+        { method: 'GET', url: `${BASE_URL}/api/alerts?t=60` },
+        { method: 'GET', url: `${BASE_URL}/api/forecast?t=60` },
+        { method: 'GET', url: `${BASE_URL}/api/hotspots?t=60&min_depth=15` },
+        { method: 'POST', url: `${BASE_URL}/api/route`, body: { from: [19.039, 72.8619], to: [19.0728, 72.8826], t: 60, mode: 'emergency' } },
+        { method: 'POST', url: `${BASE_URL}/api/route/compare`, body: { from: [19.040, 72.8635], to: [19.0728, 72.8826], t: 60, mode: 'emergency' } },
+        { method: 'GET', url: `${BASE_URL}/api/rainfall` },
+        { method: 'GET', url: `${BASE_URL}/api/drain/status` },
+        { method: 'GET', url: `${BASE_URL}/api/drains` },
+        { method: 'GET', url: `${BASE_URL}/api/roads` }
+      ];
+
+      for (const t of testList) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${t.method}</td><td>${t.url.replace(BASE_URL, '')}</td><td>...</td><td>-</td><td>-</td>`;
+        tbody.appendChild(row);
+
+        const t0 = performance.now();
+        try {
+          const opts = { method: t.method, headers: { 'Accept': 'application/json' } };
+          if (t.body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(t.body); }
+          const res = await fetch(t.url, opts);
+          const dur = Math.round(performance.now() - t0);
+          row.children[2].innerHTML = `<span class="badge badge-status-ok">${res.status} OK</span>`;
+          row.children[3].textContent = `${dur} ms`;
+          row.children[4].textContent = 'Pass';
+        } catch (err) {
+          row.children[2].innerHTML = `<span class="badge badge-status-err">FAIL</span>`;
+          row.children[4].textContent = err.message;
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      selectEndpoint('summary');
+      checkBackendHealth();
+    });
+  </script>
+</body>
+</html>

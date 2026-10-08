@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flood-Safe Route Planner & Comparison - Urban Flood Nowcasting</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: rgba(18, 24, 38, 0.95);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --orange: #f97316;
+      --red: #ef4444;
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      background: #0f172a;
+      border-bottom: 1px solid var(--card-border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-icon {
+      font-size: 22px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+    }
+    .brand-title { font-size: 15px; font-weight: 800; color: #fff; }
+    .brand-sub { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; }
+
+    nav.nav-tabs { display: flex; gap: 6px; }
+    .nav-tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+    .nav-tab.active {
+      color: #fff;
+      background: #1e293b;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      flex: 1;
+      height: calc(100vh - 58px);
+      overflow: hidden;
+    }
+
+    @media (max-width: 960px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        height: auto;
+        overflow-y: auto;
+      }
+    }
+
+    .sidebar-panel {
+      background: #111827;
+      border-right: 1px solid var(--card-border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    select, input[type="text"] {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      font-size: 13px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      outline: none;
+      width: 100%;
+    }
+
+    select:focus, input:focus { border-color: var(--accent); }
+
+    .mode-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .mode-btn {
+      padding: 8px 6px;
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-compute {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 11px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-compute:hover { transform: translateY(-1px); }
+
+    /* Comparison Cards */
+    .compare-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .compare-card {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .compare-card.dry {
+      border-left: 4px solid var(--red);
+    }
+
+    .compare-card.safe {
+      border-left: 4px solid var(--green);
+      background: rgba(16, 185, 129, 0.06);
+    }
+
+    .compare-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .compare-metrics {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    .metric-val { font-weight: 700; color: #fff; }
+
+    .hazard-tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .hazard-tag.red {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .hazard-tag.green {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+    }
+
+    /* Map Pane */
+    .map-pane {
+      position: relative;
+      height: 100%;
+    }
+
+    #routeMap {
+      width: 100%;
+      height: 100%;
+      background: #0b0f17;
+    }
+
+    .map-banner {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 500;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+    .legend-line {
+      width: 24px;
+      height: 4px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="brand">
+      <div class="brand-icon">🧭</div>
+      <div>
+        <div class="brand-title">Flood-Safe Route Planner</div>
+        <div class="brand-sub">Dual-Route Inundation Comparison</div>
+      </div>
+    </a>
+
+    <nav class="nav-tabs">
+      <a href="/" class="nav-tab">🗺️ Live GIS Map</a>
+      <a href="/routing" class="nav-tab active">🧭 Safe Navigation</a>
+      <a href="/tester" class="nav-tab">🛠️ Municipal Simulator</a>
+      <a href="/api-tester" class="nav-tab">⚡ API Console</a>
+    </nav>
+
+    <div style="font-family:var(--mono); font-size:12px; color:var(--accent);">
+      A* Safe Graph Search
+    </div>
+  </header>
+
+  <div class="main-grid">
+    <!-- Left Configuration & Comparison Sidebar -->
+    <div class="sidebar-panel">
+      <div class="section-title">
+        <span>📍 Route Parameters</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Origin Location</label>
+        <select id="routeFromSelect" onchange="updateCustomCoords()">
+          <option value="19.0400,72.8635" selected>Sion Railway Station (East)</option>
+          <option value="19.0390,72.8619">Sion Circle (Depression Bowl)</option>
+          <option value="19.0335,72.8580">Gandhi Market Low Inlet</option>
+          <option value="19.0315,72.8560">King's Circle Junction</option>
+          <option value="19.0420,72.8570">Road No. 24 Dip</option>
+          <option value="19.0450,72.8600">Sulochana Shetty Marg</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Destination Location</label>
+        <select id="routeToSelect" onchange="updateCustomCoords()">
+          <option value="19.0728,72.8826" selected>LTT Hospital (Emergency Trauma Center)</option>
+          <option value="19.0500,72.8710">Eastern Express Highway Ramp</option>
+          <option value="19.0480,72.8510">Mahim Creek / Dharavi Link</option>
+          <option value="19.0465,72.8665">Sion Fort High Ground Elevation</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Forecast Lead Time</label>
+        <select id="leadTimeSelect">
+          <option value="0">t = 0m (Storm Onset)</option>
+          <option value="30">t = 30m (Rising Runoff)</option>
+          <option value="60" selected>t = 60m (Peak Storm Surcharge)</option>
+          <option value="90">t = 90m (Post-Peak)</option>
+          <option value="120">t = 120m (Receding)</option>
+          <option value="180">t = 180m (Drain Down)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Vehicle Mode (Safety Threshold)</label>
+        <div class="mode-selector">
+          <button type="button" class="mode-btn active" onclick="setMode('emergency', this)">🚑 Emergency<br><span style="font-size:10px;">&lt; 30cm</span></button>
+          <button type="button" class="mode-btn" onclick="setMode('commuter', this)">🚗 Car / 2W<br><span style="font-size:10px;">&lt; 15cm</span></button>
+          <button type="button" class="mode-btn" onclick="setMode('bus', this)">🚌 Transit Bus<br><span style="font-size:10px;">&lt; 35cm</span></button>
+        </div>
+      </div>
+
+      <button class="btn-compute" onclick="runRouteComparison()">
+        <span>⚡ Compare Normal vs Safe Route</span>
+      </button>
+
+      <!-- Side-by-Side Comparison Container -->
+      <div class="compare-container" id="compareResults" style="display:none;">
+        <!-- Dry Route Card -->
+        <div class="compare-card dry">
+          <div class="compare-title" style="color:var(--red);">
+            <span>🔴 Standard Route (Shortest)</span>
+            <span id="dryStatusBadge">Impassable</span>
+          </div>
+          <div class="compare-metrics">
+            <div>Dist: <span class="metric-val" id="dryDist">-- km</span></div>
+            <div>Time: <span class="metric-val" id="dryTime">-- min</span></div>
+            <div>Max Depth: <span class="metric-val" style="color:var(--red);" id="dryDepth">-- cm</span></div>
+          </div>
+          <div class="hazard-tag red" id="dryHazardMessage">
+            ⚠️ Hits 72cm flood at Sion Circle Bowl. High risk of engine hydro-lock.
+          </div>
+        </div>
+
+        <!-- Safe Route Card -->
+        <div class="compare-card safe">
+          <div class="compare-title" style="color:var(--green);">
+            <span>🟢 Flood-Safe Route</span>
+            <span id="safeStatusBadge">Recommended</span>
+          </div>
+          <div class="compare-metrics">
+            <div>Dist: <span class="metric-val" id="safeDist">-- km</span></div>
+            <div>Time: <span class="metric-val" id="safeTime">-- min</span></div>
+            <div>Max Depth: <span class="metric-val" style="color:var(--green);" id="safeDepth">-- cm</span></div>
+          </div>
+          <div class="hazard-tag green" id="safeAdvantageMessage">
+            ✓ Bypasses flooded depressions via higher elevation segments.
+          </div>
+        </div>
+
+        <!-- Differential Summary -->
+        <div style="background:#0f172a; border:1px solid var(--card-border); border-radius:8px; padding:10px; font-family:var(--mono); font-size:11px; display:flex; justify-content:space-between;">
+          <div>Detour: <b id="diffDetour" style="color:var(--accent);">+0.0 km</b></div>
+          <div>Time Delta: <b id="diffTime" style="color:var(--accent);">+0 min</b></div>
+          <div>Depth Saved: <b id="diffDepth" style="color:var(--green);">0 cm</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map Viewport -->
+    <div class="map-pane">
+      <div id="routeMap"></div>
+
+      <!-- Map Overlay Legend -->
+      <div class="map-banner">
+        <div style="font-weight:700; color:#fff; font-size:12px;">Route Legend</div>
+        <div class="legend-row">
+          <div class="legend-line" style="background:#ef4444; border-top: 2px dashed #fff;"></div>
+          <span>Standard Route (Flooded Path)</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-line" style="background:#10b981; box-shadow: 0 0 6px #10b981;"></div>
+          <span>Flood-Safe Reroute (A* Safe)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    let activeMode = 'emergency';
+    let map = null;
+    let dryLayer = null;
+    let safeLayer = null;
+    let startMarker = null;
+    let destMarker = null;
+
+    function initMap() {
+      map = L.map('routeMap', {
+        center: [19.044, 72.866],
+        zoom: 14,
+        zoomControl: true
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Auto run first comparison
+      runRouteComparison();
+    }
+
+    function setMode(mode, btn) {
+      activeMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function updateCustomCoords() {
+      // triggers when dropdown changes
+    }
+
+    async function runRouteComparison() {
+      const fromVal = document.getElementById('routeFromSelect').value.split(',').map(Number);
+      const toVal = document.getElementById('routeToSelect').value.split(',').map(Number);
+      const t = parseInt(document.getElementById('leadTimeSelect').value);
+
+      const compContainer = document.getElementById('compareResults');
+      compContainer.style.display = 'flex';
+
+      try {
+        const res = await fetch('/api/route/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: fromVal,
+            to: toVal,
+            t: t,
+            mode: activeMode
+          })
+        });
+
+        const data = await res.json();
+        if (data.error) {
+          alert('Error: ' + data.error);
+          return;
+        }
+
+        // Populate Dry metrics
+        document.getElementById('dryDist').textContent = `${data.dry_route.distance_km} km`;
+        document.getElementById('dryTime').textContent = `${data.dry_route.estimated_time_min} min`;
+        document.getElementById('dryDepth').textContent = `${data.dry_route.max_depth_cm} cm`;
+        if (data.dry_route.max_depth_cm >= 30) {
+          document.getElementById('dryStatusBadge').textContent = '⚠️ Impassable';
+          document.getElementById('dryHazardMessage').textContent = `Traverses ${data.dry_route.max_depth_cm}cm inundation! Severe danger of stranding.`;
+        } else if (data.dry_route.max_depth_cm >= 15) {
+          document.getElementById('dryStatusBadge').textContent = '⚠️ Risk';
+          document.getElementById('dryHazardMessage').textContent = `Traverses ${data.dry_route.max_depth_cm}cm waterlogging.`;
+        } else {
+          document.getElementById('dryStatusBadge').textContent = 'Passable';
+          document.getElementById('dryHazardMessage').textContent = `Passable (< 15cm depth).`;
+        }
+
+        // Populate Safe metrics
+        document.getElementById('safeDist').textContent = `${data.safe_route.route_distance_km} km`;
+        document.getElementById('safeTime').textContent = `${data.safe_route.estimated_time_min} min`;
+        document.getElementById('safeDepth').textContent = `${data.safe_route.max_depth_on_route_cm} cm`;
+
+        // Differential
+        document.getElementById('diffDetour').textContent = `+${data.comparison.detour_km} km`;
+        document.getElementById('diffTime').textContent = `+${data.comparison.time_penalty_min} min`;
+        document.getElementById('diffDepth').textContent = `-${data.comparison.depth_saved_cm} cm saved`;
+
+        // Render on Leaflet Map
+        if (dryLayer) map.removeLayer(dryLayer);
+        if (safeLayer) map.removeLayer(safeLayer);
+        if (startMarker) map.removeLayer(startMarker);
+        if (destMarker) map.removeLayer(destMarker);
+
+        // Render Dry baseline (Red dashed line)
+        if (data.dry_route.route_geojson) {
+          dryLayer = L.geoJSON(data.dry_route.route_geojson, {
+            style: {
+              color: '#ef4444',
+              weight: 5,
+              opacity: 0.85,
+              dashArray: '6, 8'
+            }
+          }).bindPopup(`<b>Standard Shortest Route</b><br>Max Depth: <b>${data.dry_route.max_depth_cm} cm</b>`).addTo(map);
+        }
+
+        // Render Safe route (Green solid line with glow)
+        if (data.safe_route.route_geojson) {
+          safeLayer = L.geoJSON(data.safe_route.route_geojson, {
+            style: {
+              color: '#10b981',
+              weight: 7,
+              opacity: 0.95
+            }
+          }).bindPopup(`<b>Flood-Safe Route</b><br>Max Depth: <b>${data.safe_route.max_depth_on_route_cm} cm</b><br>ETA: <b>${data.safe_route.estimated_time_min} mins</b>`).addTo(map);
+
+          map.fitBounds(safeLayer.getBounds(), { padding: [50, 50] });
+        }
+
+        // Start & End markers
+        startMarker = L.circleMarker(fromVal, {
+          radius: 9, fillColor: '#38bdf8', color: '#fff', weight: 2, fillOpacity: 1
+        }).bindPopup(`<b>Start</b>: ${data.from}`).addTo(map);
+
+        destMarker = L.circleMarker(toVal, {
+          radius: 9, fillColor: '#f97316', color: '#fff', weight: 2, fillOpacity: 1
+        }).bindPopup(`<b>Destination</b>: ${data.to}`).addTo(map);
+
+      } catch (err) {
+        console.error('Failed to run route comparison:', err);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', initMap);
+  </script>
+</body>
+</html>

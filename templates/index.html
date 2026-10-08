@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Urban Flood Nowcasting - Live Map GIS Dashboard</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: rgba(18, 24, 38, 0.92);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --orange: #f97316;
+      --red: #ef4444;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      background: #0f172a;
+      border-bottom: 1px solid var(--card-border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      font-size: 24px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    nav.nav-tabs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav-tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-tab.active {
+      color: #fff;
+      background: #1e293b;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Main Container */
+    .main-layout {
+      position: relative;
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    #map {
+      flex: 1;
+      height: 100%;
+      background: #0b0f17;
+      z-index: 1;
+    }
+
+    /* Overlay Control Panels */
+    .map-floating-panel {
+      position: absolute;
+      z-index: 500;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    /* Left Drawer: Metrics & Quick Routing */
+    .left-panel {
+      top: 16px;
+      left: 16px;
+      width: 360px;
+      max-height: calc(100% - 32px);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    /* Live Alert Ticker */
+    .alert-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      transition: all 0.3s ease;
+    }
+
+    .alert-banner.green {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+    }
+
+    .alert-banner.orange {
+      background: rgba(249, 115, 22, 0.15);
+      border-color: rgba(249, 115, 22, 0.4);
+      color: #fdba74;
+    }
+
+    .alert-banner.red {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+    }
+
+    /* Metrics Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .stat-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      font-family: var(--mono);
+      margin-top: 2px;
+    }
+
+    .stat-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 99px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .stat-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width 0.3s;
+    }
+
+    /* Breakdown Pills */
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .breakdown-pill {
+      flex: 1;
+      text-align: center;
+      padding: 6px 4px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .breakdown-pill.red { border-bottom: 3px solid var(--red); }
+    .breakdown-pill.orange { border-bottom: 3px solid var(--orange); }
+    .breakdown-pill.yellow { border-bottom: 3px solid var(--yellow); }
+    .breakdown-pill.green { border-bottom: 3px solid var(--green); }
+
+    /* Quick Safe Routing Card */
+    .routing-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 14px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .select-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    .select-input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Bottom Floating Timeline Player */
+    .timeline-panel {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      width: min(720px, calc(100% - 32px));
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .time-badge {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-play {
+      background: #38bdf8;
+      color: #0b0f17;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .btn-play:hover {
+      transform: scale(1.08);
+      background: #7dd3fc;
+    }
+
+    .slider-track {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 99px;
+      background: #334155;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #38bdf8;
+      border: 2px solid #fff;
+      box-shadow: 0 0 8px #38bdf8;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .timeline-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+    }
+
+    /* Map Legend Top Right */
+    .legend-panel {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 500;
+      padding: 12px 16px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 5px;
+      border-radius: 3px;
+    }
+
+    /* Layer Toggles Panel */
+    .layers-toggle-panel {
+      position: absolute;
+      top: 175px;
+      right: 16px;
+      z-index: 500;
+      padding: 10px 14px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .toggle-item:hover { color: #fff; }
+
+    /* Custom Leaflet Tooltip & Popup */
+    .leaflet-popup-content-wrapper {
+      background: #0f172a !important;
+      color: #fff !important;
+      border: 1px solid var(--card-border) !important;
+      border-radius: 10px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .leaflet-popup-tip {
+      background: #0f172a !important;
+    }
+
+    .popup-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .popup-depth {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .popup-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 900px) {
+      .left-panel {
+        width: calc(100% - 32px);
+        max-height: 280px;
+      }
+      .legend-panel, .layers-toggle-panel {
+        display: none;
+      }
+      .timeline-panel {
+        bottom: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <a href="/" class="brand">
+      <div class="brand-icon">🌊</div>
+      <div>
+        <div class="brand-title">Urban Flood Nowcasting</div>
+        <div class="brand-sub">Sion, Mumbai Pilot Domain</div>
+      </div>
+    </a>
+
+    <nav class="nav-tabs">
+      <a href="/" class="nav-tab active">🗺️ Live GIS Map</a>
+      <a href="/routing" class="nav-tab">🧭 Safe Navigation</a>
+      <a href="/tester" class="nav-tab">🛠️ Municipal Simulator</a>
+      <a href="/api-tester" class="nav-tab">⚡ API Console</a>
+    </nav>
+
+    <div class="header-right">
+      <div class="status-badge" id="backendStatus">
+        <span class="status-dot"></span>
+        <span>Nowcasting Online</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main GIS Viewport -->
+  <div class="main-layout">
+    <!-- Map Container -->
+    <div id="map"></div>
+
+    <!-- Left Panel: Live Alerts, Summary Statistics & Quick Route Finder -->
+    <div class="map-floating-panel left-panel">
+      <!-- Live City Alert Banner -->
+      <div class="alert-banner" id="liveAlertBanner">
+        <span style="font-size: 18px;" id="alertIcon">⚠️</span>
+        <div>
+          <div style="font-weight: 700; font-size: 12px;" id="alertHeadline">Fetching Advisory...</div>
+          <div id="alertDescription" style="font-size: 11px; color: var(--text-muted);">Analyzing current flood depth conditions across monitored junctions.</div>
+        </div>
+      </div>
+
+      <!-- Overview Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Max Inundation</div>
+          <div class="stat-value" id="statMaxDepth">-- cm</div>
+          <div class="stat-bar"><div class="stat-bar-fill" id="barMaxDepth" style="width: 50%;"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Street Depth</div>
+          <div class="stat-value" id="statAvgDepth">-- cm</div>
+          <div class="stat-bar"><div class="stat-bar-fill" id="barAvgDepth" style="width: 20%; background:#10b981;"></div></div>
+        </div>
+      </div>
+
+      <!-- Road Safety Breakdown -->
+      <div class="breakdown-row">
+        <div class="breakdown-pill green">
+          <div style="color:var(--green); font-weight:800; font-size:14px;" id="cntGreen">--</div>
+          <div style="color:var(--text-muted); font-size:10px;">Passable</div>
+        </div>
+        <div class="breakdown-pill yellow">
+          <div style="color:var(--yellow); font-weight:800; font-size:14px;" id="cntYellow">--</div>
+          <div style="color:var(--text-muted); font-size:10px;">Slow</div>
+        </div>
+        <div class="breakdown-pill orange">
+          <div style="color:var(--orange); font-weight:800; font-size:14px;" id="cntOrange">--</div>
+          <div style="color:var(--text-muted); font-size:10px;">Risk</div>
+        </div>
+        <div class="breakdown-pill red">
+          <div style="color:var(--red); font-weight:800; font-size:14px;" id="cntRed">--</div>
+          <div style="color:var(--text-muted); font-size:10px;">Inundated</div>
+        </div>
+      </div>
+
+      <!-- Quick Safe Route Widget -->
+      <div class="routing-card">
+        <div class="card-title">
+          <span>🚑 Flood-Safe Evacuation Route</span>
+          <span style="font-size: 10px; font-weight: normal; color: var(--accent);">Live Graph A*</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <select id="quickRouteFrom" class="select-input">
+            <option value="19.0400,72.8635">From: Sion Railway Station</option>
+            <option value="19.0390,72.8619">From: Sion Circle</option>
+            <option value="19.0335,72.8580">From: Gandhi Market</option>
+            <option value="19.0420,72.8570">From: Road No. 24</option>
+          </select>
+          <select id="quickRouteTo" class="select-input">
+            <option value="19.0728,72.8826">To: LTT Hospital (Kurla)</option>
+            <option value="19.0500,72.8710">To: Eastern Express Highway</option>
+            <option value="19.0480,72.8510">To: Mahim Creek Outfall</option>
+            <option value="19.0465,72.8665">To: Sion Fort High Ground</option>
+          </select>
+        </div>
+        <button class="btn-action" onclick="computeQuickRoute()">
+          <span>⚡ Find Safe Route</span>
+        </button>
+        <div id="quickRouteResult" style="display:none; font-size:11px; padding:8px; border-radius:6px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); font-family:var(--mono);"></div>
+      </div>
+    </div>
+
+    <!-- Map Legend -->
+    <div class="map-floating-panel legend-panel">
+      <div style="font-weight:700; color:#fff; font-size:12px; margin-bottom:4px;">Water Depth (cm)</div>
+      <div class="legend-item">
+        <div class="legend-color" style="background:#10b981;"></div>
+        <span>&lt; 5 cm (Passable)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background:#f59e0b;"></div>
+        <span>5 - 15 cm (Slow Traffic)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background:#f97316;"></div>
+        <span>15 - 30 cm (Vehicle Risk)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background:#ef4444; box-shadow: 0 0 6px #ef4444;"></div>
+        <span style="color:#fca5a5; font-weight:600;">&gt; 30 cm (Impassable)</span>
+      </div>
+    </div>
+
+    <!-- Layer Toggles -->
+    <div class="map-floating-panel layers-toggle-panel">
+      <div style="font-weight:700; color:#fff; margin-bottom:4px;">Map Layers</div>
+      <label class="toggle-item">
+        <input type="checkbox" id="layerRoadsToggle" checked onchange="toggleRoadsLayer(this.checked)">
+        <span>Flood Depths Network</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="layerDrainsToggle" checked onchange="toggleDrainsLayer(this.checked)">
+        <span>Storm Drains &amp; Inlets</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="layerHotspotsToggle" checked onchange="toggleHotspotsLayer(this.checked)">
+        <span>Surcharging Hotspots</span>
+      </label>
+    </div>
+
+    <!-- Bottom Timeline Player (0 - 180 min) -->
+    <div class="map-floating-panel timeline-panel">
+      <div class="timeline-header">
+        <div class="player-controls">
+          <button class="btn-play" id="btnPlayPause" onclick="togglePlayAnimation()" title="Play / Pause Timeline">▶</button>
+          <div style="display:flex; flex-direction:column;">
+            <span style="font-size:11px; color:var(--text-muted); font-weight:600;">NOWCAST LEAD TIME</span>
+            <span class="time-badge" id="timeBadge">+60 min (Peak Event)</span>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <span style="font-size:11px; color:var(--text-muted);">Rain Intensity: </span>
+          <span style="font-size:13px; font-weight:700; color:#38bdf8; font-family:var(--mono);" id="rainRateLabel">75.0 mm/hr</span>
+        </div>
+      </div>
+
+      <div class="slider-track">
+        <input type="range" id="timeSlider" min="0" max="180" step="15" value="60" oninput="onTimeSliderChange(this.value)">
+        <div class="timeline-ticks">
+          <span>0m (Onset)</span>
+          <span>30m</span>
+          <span>60m (Peak)</span>
+          <span>90m</span>
+          <span>120m</span>
+          <span>150m</span>
+          <span>180m (Drain Down)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    // State
+    let currentT = 60;
+    let isPlaying = false;
+    let playInterval = null;
+
+    // Map & Layers
+    let map = null;
+    let roadsLayer = null;
+    let drainsLayer = null;
+    let hotspotsLayer = null;
+    let routeLayer = null;
+    let routeStartMarker = null;
+    let routeEndMarker = null;
+
+    const SION_CENTER = [19.040, 72.862];
+
+    function initMap() {
+      map = L.map('map', {
+        center: SION_CENTER,
+        zoom: 14,
+        zoomControl: false
+      });
+
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+      // Dark Basemap (CartoDB Dark Matter)
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Load baseline data
+      loadDrains();
+      loadForecastData(currentT);
+      loadSummaryAndAlerts(currentT);
+    }
+
+    // Color by flood depth
+    function getDepthColor(depthCm) {
+      if (depthCm < 5.0) return '#10b981'; // Green
+      if (depthCm <= 15.0) return '#f59e0b'; // Yellow
+      if (depthCm <= 30.0) return '#f97316'; // Orange
+      return '#ef4444'; // Red
+    }
+
+    // Load forecast road depth GeoJSON
+    async function loadForecastData(t) {
+      try {
+        const res = await fetch(`/api/forecast?t=${t}`);
+        if (!res.ok) return;
+        const geojson = await res.json();
+
+        if (roadsLayer) map.removeLayer(roadsLayer);
+        if (hotspotsLayer) map.removeLayer(hotspotsLayer);
+
+        hotspotsLayer = L.layerGroup();
+
+        roadsLayer = L.geoJSON(geojson, {
+          style: function(feature) {
+            const depth = feature.properties.depth_cm || 0;
+            const color = getDepthColor(depth);
+            const isHotspot = feature.properties.is_hotspot;
+
+            return {
+              color: color,
+              weight: isHotspot ? 6 : (depth > 30 ? 6 : (depth > 15 ? 4 : 3)),
+              opacity: depth > 30 ? 0.95 : 0.8,
+              lineCap: 'round',
+              lineJoin: 'round'
+            };
+          },
+          onEachFeature: function(feature, layer) {
+            const props = feature.properties;
+            const depth = props.depth_cm || 0;
+            const color = getDepthColor(depth);
+
+            // Create popup
+            layer.bindPopup(`
+              <div class="popup-title">${props.name || 'Road Segment'}</div>
+              <div class="popup-depth" style="color: ${color};">${depth.toFixed(1)} cm Water Depth</div>
+              <span class="popup-badge" style="background:${color}22; color:${color}; border:1px solid ${color};">
+                ${props.level || (depth > 30 ? 'Impassable' : depth > 15 ? 'Risk' : 'Passable')}
+              </span>
+              <div style="font-size:11px; color:#94a3b8; margin-top:6px;">
+                Status: <b>${props.status || (depth > 30 ? 'Flooded' : 'Open')}</b>
+              </div>
+            `);
+
+            // If severe hotspot, add pulsing circle marker
+            if (props.is_hotspot || depth >= 35) {
+              let coords = null;
+              if (feature.geometry.type === 'Point') {
+                coords = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+              } else if (feature.geometry.type === 'LineString') {
+                const mid = feature.geometry.coordinates[Math.floor(feature.geometry.coordinates.length / 2)];
+                coords = [mid[1], mid[0]];
+              }
+              if (coords) {
+                const circle = L.circleMarker(coords, {
+                  radius: Math.min(18, 8 + depth / 6),
+                  fillColor: color,
+                  color: '#fff',
+                  weight: 1.5,
+                  opacity: 0.9,
+                  fillOpacity: 0.45
+                }).bindPopup(`<b>⚠️ Hotspot: ${props.name}</b><br>Depth: <b>${depth.toFixed(1)} cm</b>`);
+                hotspotsLayer.addLayer(circle);
+              }
+            }
+          }
+        });
+
+        if (document.getElementById('layerRoadsToggle').checked) {
+          roadsLayer.addTo(map);
+        }
+        if (document.getElementById('layerHotspotsToggle').checked) {
+          hotspotsLayer.addTo(map);
+        }
+
+      } catch (err) {
+        console.error('Failed to load forecast data:', err);
+      }
+    }
+
+    // Load drains GeoJSON
+    async function loadDrains() {
+      try {
+        const res = await fetch('/api/drains');
+        if (!res.ok) return;
+        const data = await res.json();
+
+        drainsLayer = L.geoJSON(data, {
+          pointToLayer: function(feature, latlng) {
+            const isBlocked = feature.properties.is_blocked;
+            const type = feature.properties.type;
+            const color = isBlocked ? '#ef4444' : (type === 'outfall' ? '#38bdf8' : '#a855f7');
+
+            return L.circleMarker(latlng, {
+              radius: type === 'outfall' ? 7 : 5,
+              fillColor: color,
+              color: '#ffffff',
+              weight: 1,
+              opacity: 1,
+              fillOpacity: 0.85
+            });
+          },
+          style: function(feature) {
+            if (feature.geometry.type === 'LineString') {
+              return { color: '#6366f1', weight: 2, dashArray: '4, 4', opacity: 0.6 };
+            }
+          },
+          onEachFeature: function(feature, layer) {
+            const p = feature.properties;
+            layer.bindPopup(`
+              <b>${p.name || p.id}</b><br>
+              Type: ${p.type || p.feature_class}<br>
+              ${p.is_blocked ? '<span style="color:#ef4444;font-weight:bold;">⚠️ DRAIN BLOCKED</span>' : '✓ Normal flow'}
+            `);
+          }
+        });
+
+        if (document.getElementById('layerDrainsToggle').checked) {
+          drainsLayer.addTo(map);
+        }
+      } catch (err) {
+        console.error('Failed to load drains:', err);
+      }
+    }
+
+    // Load summary and alerts
+    async function loadSummaryAndAlerts(t) {
+      try {
+        // Summary
+        const resSum = await fetch(`/api/summary?t=${t}`);
+        if (resSum.ok) {
+          const s = await resSum.json();
+          document.getElementById('statMaxDepth').textContent = `${s.max_depth_cm} cm`;
+          document.getElementById('statAvgDepth').textContent = `${s.average_depth_cm} cm`;
+
+          document.getElementById('barMaxDepth').style.width = `${Math.min(100, (s.max_depth_cm / 80) * 100)}%`;
+          document.getElementById('barAvgDepth').style.width = `${Math.min(100, (s.average_depth_cm / 30) * 100)}%`;
+
+          document.getElementById('cntGreen').textContent = s.breakdown.passable_green;
+          document.getElementById('cntYellow').textContent = s.breakdown.slow_traffic_yellow;
+          document.getElementById('cntOrange').textContent = s.breakdown.risk_orange;
+          document.getElementById('cntRed').textContent = s.breakdown.impassable_red;
+        }
+
+        // Alerts
+        const resAlert = await fetch(`/api/alerts?t=${t}`);
+        if (resAlert.ok) {
+          const a = await resAlert.json();
+          const banner = document.getElementById('liveAlertBanner');
+          const headline = document.getElementById('alertHeadline');
+          const desc = document.getElementById('alertDescription');
+          const icon = document.getElementById('alertIcon');
+
+          headline.textContent = a.overall_level;
+          desc.textContent = a.message;
+
+          banner.className = 'alert-banner';
+          if (a.overall_level.includes('RED')) {
+            banner.classList.add('red');
+            icon.textContent = '🚨';
+          } else if (a.overall_level.includes('ORANGE')) {
+            banner.classList.add('orange');
+            icon.textContent = '⚠️';
+          } else {
+            banner.classList.add('green');
+            icon.textContent = '✓';
+          }
+        }
+
+        // Rainfall
+        const resRain = await fetch('/api/rainfall');
+        if (resRain.ok) {
+          const r = await resRain.json();
+          const match = r.time_series.find(item => item.time_min === t);
+          if (match) {
+            document.getElementById('rainRateLabel').textContent = `${match.intensity_mm_per_hr.toFixed(1)} mm/hr`;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load summary/alerts:', err);
+      }
+    }
+
+    // Timeline Slider Change
+    function onTimeSliderChange(val) {
+      currentT = parseInt(val);
+      const isPeak = currentT === 60 ? ' (Peak Event)' : (currentT === 0 ? ' (Storm Onset)' : (currentT === 180 ? ' (Drain Down)' : ''));
+      document.getElementById('timeBadge').textContent = `+${currentT} min${isPeak}`;
+      loadForecastData(currentT);
+      loadSummaryAndAlerts(currentT);
+    }
+
+    // Play / Pause Animation
+    function togglePlayAnimation() {
+      isPlaying = !isPlaying;
+      const btn = document.getElementById('btnPlayPause');
+
+      if (isPlaying) {
+        btn.textContent = '❚❚';
+        playInterval = setInterval(() => {
+          let nextT = currentT + 15;
+          if (nextT > 180) nextT = 0;
+          document.getElementById('timeSlider').value = nextT;
+          onTimeSliderChange(nextT);
+        }, 1500);
+      } else {
+        btn.textContent = '▶';
+        clearInterval(playInterval);
+      }
+    }
+
+    // Compute Quick Safe Route
+    async function computeQuickRoute() {
+      const fromStr = document.getElementById('quickRouteFrom').value;
+      const toStr = document.getElementById('quickRouteTo').value;
+      const fromCoords = fromStr.split(',').map(Number);
+      const toCoords = toStr.split(',').map(Number);
+
+      const resBox = document.getElementById('quickRouteResult');
+      resBox.style.display = 'block';
+      resBox.innerHTML = '<span style="color:#38bdf8;">Finding safest route avoiding flood water...</span>';
+
+      try {
+        const res = await fetch('/api/route', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: fromCoords,
+            to: toCoords,
+            t: currentT,
+            mode: 'emergency'
+          })
+        });
+
+        const route = await res.json();
+        if (route.error) {
+          resBox.innerHTML = `<span style="color:#ef4444;">${route.error}</span>`;
+          return;
+        }
+
+        // Draw Route on map
+        if (routeLayer) map.removeLayer(routeLayer);
+        if (routeStartMarker) map.removeLayer(routeStartMarker);
+        if (routeEndMarker) map.removeLayer(routeEndMarker);
+
+        if (route.route_geojson) {
+          routeLayer = L.geoJSON(route.route_geojson, {
+            style: {
+              color: '#06b6d4',
+              weight: 6,
+              opacity: 0.95,
+              dashArray: '2, 6'
+            }
+          }).addTo(map);
+
+          // Add Start & End Markers
+          routeStartMarker = L.circleMarker(fromCoords, {
+            radius: 8, fillColor: '#10b981', color: '#fff', weight: 2, fillOpacity: 1
+          }).bindPopup(`<b>Start</b>: ${route.from}`).addTo(map);
+
+          routeEndMarker = L.circleMarker(toCoords, {
+            radius: 8, fillColor: '#ef4444', color: '#fff', weight: 2, fillOpacity: 1
+          }).bindPopup(`<b>Destination</b>: ${route.to}`).addTo(map);
+
+          map.fitBounds(routeLayer.getBounds(), { padding: [50, 50] });
+        }
+
+        resBox.innerHTML = `
+          <div style="color:#38bdf8; font-weight:bold; margin-bottom:4px;">✓ Safe Route Active (${route.route_distance_km} km)</div>
+          <div>ETA: <b>${route.estimated_time_min} mins</b> | Max Depth: <b>${route.max_depth_on_route_cm} cm</b></div>
+          ${route.avoided && route.avoided.length ? `<div style="color:#f97316; margin-top:4px;">Avoided ${route.avoided.length} flooded streets: ${route.avoided.slice(0, 2).join(', ')}...</div>` : '<div style="color:#10b981; margin-top:4px;">✓ Direct road open</div>'}
+        `;
+
+      } catch (err) {
+        resBox.innerHTML = `<span style="color:#ef4444;">Route calculation error: ${err.message}</span>`;
+      }
+    }
+
+    // Layer toggles
+    function toggleRoadsLayer(show) {
+      if (!roadsLayer) return;
+      if (show) map.addLayer(roadsLayer);
+      else map.removeLayer(roadsLayer);
+    }
+
+    function toggleDrainsLayer(show) {
+      if (!drainsLayer) return;
+      if (show) map.addLayer(drainsLayer);
+      else map.removeLayer(drainsLayer);
+    }
+
+    function toggleHotspotsLayer(show) {
+      if (!hotspotsLayer) return;
+      if (show) map.addLayer(hotspotsLayer);
+      else map.removeLayer(hotspotsLayer);
+    }
+
+    // Init on DOM ready
+    window.addEventListener('DOMContentLoaded', initMap);
+  </script>
+</body>
+</html>

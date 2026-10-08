@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Municipal Engineering & Simulation Tester - Urban Flood Nowcasting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: #131b2e;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --orange: #f97316;
+      --red: #ef4444;
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #0f172a;
+      border-bottom: 1px solid var(--card-border);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-icon {
+      font-size: 22px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+    }
+    .brand-title { font-size: 15px; font-weight: 800; color: #fff; }
+    .brand-sub { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; }
+
+    nav.nav-tabs { display: flex; gap: 6px; }
+    .nav-tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+    .nav-tab.active {
+      color: #fff;
+      background: #1e293b;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .container {
+      max-width: 1320px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .page-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    select, input[type="text"], input[type="number"] {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      font-size: 13px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      outline: none;
+      width: 100%;
+    }
+
+    select:focus, input:focus { border-color: var(--accent); }
+
+    .btn {
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--red);
+      color: #fca5a5;
+    }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.35); }
+
+    .btn-success {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--green);
+      color: #6ee7b7;
+    }
+    .btn-success:hover { background: rgba(16, 185, 129, 0.35); }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      max-height: 380px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #0f172a;
+      color: var(--text-muted);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: var(--mono);
+    }
+
+    .badge-red { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid var(--red); }
+    .badge-orange { background: rgba(249, 115, 22, 0.2); color: #fdba74; border: 1px solid var(--orange); }
+    .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid var(--yellow); }
+    .badge-green { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid var(--green); }
+
+    .toast-banner {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: var(--mono);
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .toast-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--green);
+      color: #6ee7b7;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="brand">
+      <div class="brand-icon">🛠️</div>
+      <div>
+        <div class="brand-title">Municipal Simulation Control Room</div>
+        <div class="brand-sub">Drainage & Storm Stress-Testing Console</div>
+      </div>
+    </a>
+
+    <nav class="nav-tabs">
+      <a href="/" class="nav-tab">🗺️ Live GIS Map</a>
+      <a href="/routing" class="nav-tab">🧭 Safe Navigation</a>
+      <a href="/tester" class="nav-tab active">🛠️ Municipal Simulator</a>
+      <a href="/api-tester" class="nav-tab">⚡ API Console</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="dashboard-header">
+      <div>
+        <h1 class="page-title">Hydrodynamic Model &amp; Stress Testing</h1>
+        <p class="page-desc">Simulate artificial cloudburst storms, inject debris blockages into storm drains, and observe cascading road inundations in real time.</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-success" onclick="resetAllDrains()">
+          <span>🔄 Clear All Drain Blockages</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Toast Message -->
+    <div id="toast" class="toast-banner"></div>
+
+    <div class="grid-2">
+      <!-- Card 1: Custom Storm Simulation -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">⛈️ Storm Scenario Generator</div>
+          <span class="badge badge-yellow">2D Overland Runoff</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Storm Event Profile</label>
+          <select id="simStormType" onchange="onStormTypeChange()">
+            <option value="cloudburst">Cloudburst Flash Storm (Peak 120 mm/hr)</option>
+            <option value="heavy_monsoon" selected>Monsoonal Convective Cell (Peak 75 mm/hr)</option>
+            <option value="moderate">Moderate Continuous Monsoon (Peak 40 mm/hr)</option>
+            <option value="custom">Custom Parameters...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <span>Peak Rainfall Intensity</span>
+            <span id="peakDisplay" style="font-family:var(--mono); color:var(--accent);">75 mm/hr</span>
+          </label>
+          <input type="number" id="simPeak" value="75" min="10" max="250" step="5">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Storm Duration</label>
+          <select id="simDuration">
+            <option value="180" selected>180 minutes (Full 3-Hour Nowcast Horizon)</option>
+            <option value="120">120 minutes (2 Hours)</option>
+            <option value="90">90 minutes (1.5 Hours)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="btnSimulate" onclick="runStormSimulation()">
+          <span>▶ Re-Simulate Hydrodynamic Model</span>
+        </button>
+      </div>
+
+      <!-- Card 2: Drain Inlets Blockage Controller -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">🚧 Storm Drain Clogging Injector</div>
+          <span class="badge badge-red" id="activeBlockagesCount">0 Blocked</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Select Drainage Inlet / Sump</label>
+          <select id="drainSelect">
+            <option value="INLET_SION_CIRCLE" selected>INLET_SION_CIRCLE - Sion Circle Main Sump (3200 m²)</option>
+            <option value="INLET_GANDHI_MKT">INLET_GANDHI_MKT - Gandhi Market Low Catchment (3800 m²)</option>
+            <option value="INLET_KINGS_CIRCLE">INLET_KINGS_CIRCLE - King's Circle Junction (2600 m²)</option>
+            <option value="INLET_SION_STATION_E">INLET_SION_STATION_E - Sion Station East (1500 m²)</option>
+            <option value="INLET_ROAD_24">INLET_ROAD_24 - Road No. 24 Drain Dip (2400 m²)</option>
+            <option value="INLET_LBS_MARG_S">INLET_LBS_MARG_S - LBS Marg South Surcharge (1800 m²)</option>
+            <option value="INLET_DHARAVI_LINK">INLET_DHARAVI_LINK - Dharavi Link Sump (2000 m²)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Capacity Reduction (Clogging Factor)</label>
+          <select id="clogReduction">
+            <option value="1.0" selected>100% Clogged (Severe trash/debris choke)</option>
+            <option value="0.7">70% Blocked (Heavy silt buildup)</option>
+            <option value="0.4">40% Blocked (Partial sediment)</option>
+            <option value="0.0">0% (Unclogged / Restored)</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:4px;">
+          <button class="btn btn-danger" style="flex:1;" onclick="applyDrainBlockage(true)">
+            <span>⛔ Inject Blockage</span>
+          </button>
+          <button class="btn btn-success" style="flex:1;" onclick="applyDrainBlockage(false)">
+            <span>✓ Clear This Drain</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ranked Inundation Hotspots Table -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">🚨 Ranked Surcharging Hotspots &amp; Critical Depressions</div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <span style="font-size:12px; color:var(--text-muted);">Lead Time:</span>
+          <select id="hotspotTime" style="width:auto; padding:4px 8px; font-size:12px;" onchange="loadHotspotsTable()">
+            <option value="0">t = 0m</option>
+            <option value="30">t = 30m</option>
+            <option value="60" selected>t = 60m (Peak)</option>
+            <option value="90">t = 90m</option>
+            <option value="120">t = 120m</option>
+            <option value="180">t = 180m</option>
+          </select>
+          <span style="font-size:12px; color:var(--text-muted);">Min Depth:</span>
+          <select id="hotspotMinDepth" style="width:auto; padding:4px 8px; font-size:12px;" onchange="loadHotspotsTable()">
+            <option value="5">&gt; 5 cm</option>
+            <option value="15" selected>&gt; 15 cm</option>
+            <option value="30">&gt; 30 cm (Critical)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Location / Node</th>
+              <th>Type</th>
+              <th>Depth (cm)</th>
+              <th>Risk Level</th>
+              <th>Coordinates</th>
+              <th>Hydraulic Status</th>
+            </tr>
+          </thead>
+          <tbody id="hotspotsTableBody">
+            <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Loading hotspots...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showToast(msg, isSuccess = true) {
+      const toast = document.getElementById('toast');
+      toast.className = `toast-banner ${isSuccess ? 'toast-success' : 'toast-danger'}`;
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    }
+
+    function onStormTypeChange() {
+      const type = document.getElementById('simStormType').value;
+      const peakInput = document.getElementById('simPeak');
+      const peakDisplay = document.getElementById('peakDisplay');
+
+      if (type === 'cloudburst') peakInput.value = 120;
+      else if (type === 'heavy_monsoon') peakInput.value = 75;
+      else if (type === 'moderate') peakInput.value = 40;
+
+      peakDisplay.textContent = `${peakInput.value} mm/hr`;
+    }
+
+    async function runStormSimulation() {
+      const btn = document.getElementById('btnSimulate');
+      btn.disabled = true;
+      btn.innerHTML = '⏳ Simulating Coupled Overland & Drainage Model...';
+
+      const stormType = document.getElementById('simStormType').value;
+      const peak = parseFloat(document.getElementById('simPeak').value);
+      const duration = parseInt(document.getElementById('simDuration').value);
+
+      try {
+        const res = await fetch('/api/simulate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ storm_type: stormType, peak_intensity: peak, duration_min: duration })
+        });
+        const data = await res.json();
+        showToast(`✓ ${data.message}`);
+        loadHotspotsTable();
+        refreshDrainStats();
+      } catch (err) {
+        showToast(`Simulation failed: ${err.message}`, false);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '▶ Re-Simulate Hydrodynamic Model';
+      }
+    }
+
+    async function applyDrainBlockage(isBlocked) {
+      const drainId = document.getElementById('drainSelect').value;
+      const reduction = isBlocked ? parseFloat(document.getElementById('clogReduction').value) : 0.0;
+
+      try {
+        const res = await fetch('/api/drain/block', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            drain_id: drainId,
+            blocked: isBlocked,
+            capacity_reduction: reduction
+          })
+        });
+        const data = await res.json();
+        showToast(`✓ ${data.message}`);
+        loadHotspotsTable();
+        refreshDrainStats();
+      } catch (err) {
+        showToast(`Blockage update error: ${err.message}`, false);
+      }
+    }
+
+    async function resetAllDrains() {
+      if (!confirm('Clear all drain blockages and reset back to baseline?')) return;
+      try {
+        const res = await fetch('/api/drain/reset', { method: 'POST' });
+        const data = await res.json();
+        showToast(`✓ ${data.message}`);
+        loadHotspotsTable();
+        refreshDrainStats();
+      } catch (err) {
+        showToast(`Reset failed: ${err.message}`, false);
+      }
+    }
+
+    async function refreshDrainStats() {
+      try {
+        const res = await fetch('/api/stats/drainage');
+        if (res.ok) {
+          const s = await res.json();
+          document.getElementById('activeBlockagesCount').textContent = `${s.blockage_count} Active Blockages`;
+        }
+      } catch (e) {}
+    }
+
+    async function loadHotspotsTable() {
+      const t = document.getElementById('hotspotTime').value;
+      const minD = document.getElementById('hotspotMinDepth').value;
+      const tbody = document.getElementById('hotspotsTableBody');
+
+      try {
+        const res = await fetch(`/api/hotspots?t=${t}&min_depth=${minD}`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        if (!data.hotspots || !data.hotspots.length) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--green);">✓ No locations exceed ${minD} cm at t=${t}m.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.hotspots.map((h, i) => {
+          let badgeClass = h.depth_cm > 30 ? 'badge-red' : (h.depth_cm > 15 ? 'badge-orange' : 'badge-yellow');
+          return `
+            <tr>
+              <td style="font-family:var(--mono); font-weight:bold;">#${i + 1}</td>
+              <td style="font-weight:600; color:#fff;">${h.name}</td>
+              <td style="color:var(--text-muted); font-size:11px;">${h.type}</td>
+              <td style="font-family:var(--mono); font-weight:800; color:${h.depth_cm > 30 ? '#ef4444' : '#f97316'};">${h.depth_cm.toFixed(1)} cm</td>
+              <td><span class="badge ${badgeClass}">${h.level}</span></td>
+              <td style="font-family:var(--mono); font-size:11px; color:var(--text-muted);">[${h.location.map(x => x.toFixed(4)).join(', ')}]</td>
+              <td style="color:var(--text-muted); font-size:11px;">${h.surcharged ? '⚠️ Surcharging' : 'Normal'}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color:var(--red);">Error loading hotspots</td></tr>`;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadHotspotsTable();
+      refreshDrainStats();
+    });
+  </script>
+</body>
+</html>
