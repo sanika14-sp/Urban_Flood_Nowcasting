@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Urban Flood Nowcasting - Backend & REST API Tester</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-border: #30363d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --amber: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--surface-border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+
+    .badge-get { background: rgba(56, 139, 253, 0.2); color: #58a6ff; border: 1px solid #388bfd; }
+    .badge-post { background: rgba(210, 153, 34, 0.2); color: #d29922; border: 1px solid #d29922; }
+    .badge-status-ok { background: rgba(63, 185, 80, 0.2); color: var(--green); border: 1px solid var(--green); }
+    .badge-status-err { background: rgba(248, 81, 73, 0.2); color: var(--red); border: 1px solid var(--red); }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #21262d;
+      border: 1px solid var(--surface-border);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #8b949e;
+    }
+    .status-dot.online { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .status-dot.offline { background: var(--red); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--surface-border);
+      background: #21262d;
+      color: var(--text);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: #30363d;
+      border-color: #8b949e;
+    }
+
+    .btn-primary {
+      background: #1f6feb;
+      color: #fff;
+      border-color: #388bfd;
+    }
+
+    .btn-primary:hover {
+      background: #388bfd;
+    }
+
+    .btn-run-all {
+      background: rgba(63, 185, 80, 0.15);
+      color: var(--green);
+      border-color: var(--green);
+    }
+    .btn-run-all:hover {
+      background: rgba(63, 185, 80, 0.3);
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 280px 1fr 1fr;
+      flex: 1;
+      height: calc(100vh - 61px);
+      overflow: hidden;
+    }
+
+    @media (max-width: 1100px) {
+      .container {
+        grid-template-columns: 240px 1fr;
+        grid-template-rows: auto 1fr;
+        height: auto;
+        overflow: auto;
+      }
+      .response-pane {
+        grid-column: span 2;
+        min-height: 500px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+      }
+    }
+
+    /* Left Sidebar: Endpoints list */
+    .sidebar {
+      background: #12161c;
+      border-right: 1px solid var(--surface-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 12px 16px 6px;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      border-left: 3px solid transparent;
+      text-decoration: none;
+      transition: background 0.1s;
+    }
+
+    .nav-item:hover {
+      background: #1c2128;
+    }
+
+    .nav-item.active {
+      background: #1f242c;
+      border-left-color: var(--accent);
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .nav-item .endpoint-path {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Middle Pane: Request Builder */
+    .request-pane {
+      background: var(--surface);
+      border-right: 1px solid var(--surface-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 20px;
+      gap: 16px;
+    }
+
+    .pane-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .pane-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pane-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .pane-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .form-label span.hint {
+      color: var(--text-muted);
+      font-weight: normal;
+      font-family: var(--font-mono);
+    }
+
+    input[type="text"], input[type="number"], select, textarea {
+      background: #0d1117;
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .range-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .range-container input[type="range"] {
+      flex: 1;
+    }
+
+    .range-val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--accent);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    .quick-preset-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .btn-preset {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #21262d;
+      border: 1px solid var(--surface-border);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .btn-preset:hover {
+      color: var(--text);
+      border-color: #8b949e;
+    }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    /* Right Pane: Response Inspector */
+    .response-pane {
+      background: #0d1117;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .response-header {
+      background: #161b22;
+      border-bottom: 1px solid var(--surface-border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .meta-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .meta-pill {
+      background: #21262d;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--text);
+    }
+
+    .response-body-wrapper {
+      flex: 1;
+      overflow: auto;
+      padding: 16px 20px;
+      position: relative;
+    }
+
+    pre#jsonOutput {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+      color: #e6edf3;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* JSON Syntax Coloring */
+    .json-key { color: #79c0ff; }
+    .json-string { color: #a5d6ff; }
+    .json-number { color: #d2a8ff; }
+    .json-boolean { color: #ff7b72; font-weight: bold; }
+    .json-null { color: #7ee787; font-style: italic; }
+
+    /* Suite results modal / drawer */
+    #suiteContainer {
+      display: none;
+      background: #161b22;
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      margin: 16px 20px;
+      padding: 16px;
+    }
+
+    .table-suite {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      margin-top: 10px;
+    }
+
+    .table-suite th, .table-suite td {
+      border: 1px solid var(--surface-border);
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .table-suite th {
+      background: #21262d;
+      color: var(--text-muted);
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-title">
+      <span style="font-size: 20px;">🌊</span>
+      <div>
+        <h1 style="font-size: 15px; font-weight: 700;">Urban Flood Nowcasting</h1>
+        <div style="font-size: 11px; color: var(--text-muted);">Backend & REST API Interactive Test Console</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="status-pill" id="healthPill" title="Checks GET /api/summary?t=0">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Checking Backend...</span>
+      </div>
+      <button class="btn btn-run-all" id="btnRunSuite" onclick="runAllTests()">
+        <span>▶</span> Run All Tests Suite
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- LEFT SIDEBAR: Endpoints -->
+    <nav class="sidebar" id="endpointNav">
+      <div class="sidebar-section-title">Flood Forecast & Analysis</div>
+      <a class="nav-item active" onclick="selectEndpoint('summary')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/summary</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('forecast')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/forecast</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('hotspots')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/hotspots</span>
+      </a>
+
+      <div class="sidebar-section-title">Routing & Intervention</div>
+      <a class="nav-item" onclick="selectEndpoint('route')">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/api/route</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('drain_block')">
+        <span class="badge badge-post">POST</span>
+        <span class="endpoint-path">/api/drain/block</span>
+      </a>
+
+      <div class="sidebar-section-title">Network & Baseline Data</div>
+      <a class="nav-item" onclick="selectEndpoint('rainfall')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/rainfall</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('drains')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/drains</span>
+      </a>
+      <a class="nav-item" onclick="selectEndpoint('roads')">
+        <span class="badge badge-get">GET</span>
+        <span class="endpoint-path">/api/roads</span>
+      </a>
+
+      <div class="sidebar-section-title">Custom Tool</div>
+      <a class="nav-item" onclick="selectEndpoint('custom')">
+        <span class="badge badge-get" style="background:#30363d;color:#fff;">ANY</span>
+        <span class="endpoint-path">Custom HTTP Query</span>
+      </a>
+    </nav>
+
+    <!-- MIDDLE PANE: Interactive Inputs Form -->
+    <main class="request-pane" id="requestFormPane">
+      <!-- Dynamic Form Container -->
+      <div id="endpointFormArea"></div>
+    </main>
+
+    <!-- RIGHT PANE: Response Inspector -->
+    <section class="response-pane">
+      <div class="response-header">
+        <div class="meta-badges">
+          <span id="resStatusBadge" class="badge badge-status-ok" style="display:none;">200 OK</span>
+          <span id="resTimeBadge" class="meta-pill" style="display:none;">0 ms</span>
+          <span id="resSizeBadge" class="meta-pill" style="display:none;">0 KB</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn" style="padding: 4px 8px; font-size: 11px;" onclick="copyResponseJson()">📋 Copy JSON</button>
+          <button class="btn" style="padding: 4px 8px; font-size: 11px;" onclick="copyCurlCommand()">💻 Copy cURL</button>
+          <button class="btn" style="padding: 4px 8px; font-size: 11px;" onclick="clearResponse()">✕ Clear</button>
+        </div>
+      </div>
+
+      <!-- Quick highlight card for key attributes -->
+      <div id="quickInsightBanner" style="display:none; background:#161b22; border-bottom:1px solid var(--surface-border); padding:8px 20px; font-size:12px; font-family:var(--font-mono); color:var(--accent);"></div>
+
+      <div id="suiteContainer">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="font-size: 13px; font-weight:700;">Smoke Test Suite Results</h3>
+          <button class="btn" style="font-size:11px; padding:2px 8px;" onclick="document.getElementById('suiteContainer').style.display='none'">Close</button>
+        </div>
+        <table class="table-suite" id="suiteTable">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint</th>
+              <th>Status</th>
+              <th>Latency</th>
+              <th>Preview Summary</th>
+            </tr>
+          </thead>
+          <tbody id="suiteTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="response-body-wrapper">
+        <pre id="jsonOutput">// Click "Send Request" or select an endpoint to inspect the backend response</pre>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const BASE_URL = window.location.origin;
+    let activeEndpointId = 'summary';
+    let lastRequestUrl = '';
+    let lastRequestMethod = 'GET';
+    let lastRequestBody = null;
+    let rawResponseText = '';
+
+    const ENDPOINTS = {
+      summary: {
+        method: 'GET',
+        path: '/api/summary',
+        title: 'Citywide Flood Summary',
+        desc: 'Returns high-level statistics for city officials and responders, including road depths breakdown (green, yellow, orange, red) at lead time t.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">
+              <span>Lead Time (t)</span>
+              <span class="hint">0 to 180 min (15m steps)</span>
+            </div>
+            <div class="range-container">
+              <input type="range" id="param_t" min="0" max="180" step="15" value="60" oninput="document.getElementById('val_t').textContent = this.value + ' min'">
+              <span class="range-val" id="val_t">60 min</span>
+            </div>
+            <div class="quick-preset-btns">
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 0)">t=0m (Onset)</button>
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 30)">t=30m</button>
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 60)">t=60m (Peak)</button>
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 90)">t=90m</button>
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 120)">t=120m</button>
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 180)">t=180m (Drain Down)</button>
+            </div>
+          </div>
+        `,
+        build: () => {
+          const t = document.getElementById('param_t') ? document.getElementById('param_t').value : 60;
+          return { url: `${BASE_URL}/api/summary?t=${t}`, method: 'GET', body: null };
+        }
+      },
+      forecast: {
+        method: 'GET',
+        path: '/api/forecast',
+        title: 'Street Depths Forecast (GeoJSON)',
+        desc: 'Returns predicted street depths GeoJSON FeatureCollection at given lead time (0 - 180 min) for the pilot domain.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">
+              <span>Lead Time (t)</span>
+              <span class="hint">0 - 180 min</span>
+            </div>
+            <div class="range-container">
+              <input type="range" id="param_t" min="0" max="180" step="15" value="60" oninput="document.getElementById('val_t').textContent = this.value + ' min'">
+              <span class="range-val" id="val_t">60 min</span>
+            </div>
+            <div class="quick-preset-btns">
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 0)">t=0m</button>
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 30)">t=30m</button>
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 60)">t=60m</button>
+              <button class="btn-preset" onclick="setRange('param_t', 'val_t', 120)">t=120m</button>
+            </div>
+          </div>
+        `,
+        build: () => {
+          const t = document.getElementById('param_t') ? document.getElementById('param_t').value : 60;
+          return { url: `${BASE_URL}/api/forecast?t=${t}`, method: 'GET', body: null };
+        }
+      },
+      hotspots: {
+        method: 'GET',
+        path: '/api/hotspots',
+        title: 'Flood Hotspots & Surcharging Nodes',
+        desc: 'Returns surcharging nodes and streets above given depth threshold, ranked by water depth descending.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">
+              <span>Lead Time (t)</span>
+              <span class="hint">minutes</span>
+            </div>
+            <div class="range-container">
+              <input type="range" id="param_t" min="0" max="180" step="15" value="60" oninput="document.getElementById('val_t').textContent = this.value + ' min'">
+              <span class="range-val" id="val_t">60 min</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">
+              <span>Minimum Depth Filter (cm)</span>
+              <span class="hint">min_depth threshold</span>
+            </div>
+            <input type="number" id="param_min_depth" value="15" step="1" min="0">
+            <div class="quick-preset-btns">
+              <button class="btn-preset" onclick="document.getElementById('param_min_depth').value=5">5 cm (Puddles)</button>
+              <button class="btn-preset" onclick="document.getElementById('param_min_depth').value=15">15 cm (Slow traffic)</button>
+              <button class="btn-preset" onclick="document.getElementById('param_min_depth').value=30">30 cm (Critical impassable)</button>
+            </div>
+          </div>
+        `,
+        build: () => {
+          const t = document.getElementById('param_t') ? document.getElementById('param_t').value : 60;
+          const minDepth = document.getElementById('param_min_depth') ? document.getElementById('param_min_depth').value : 15;
+          return { url: `${BASE_URL}/api/hotspots?t=${t}&min_depth=${minDepth}`, method: 'GET', body: null };
+        }
+      },
+      route: {
+        method: 'POST',
+        path: '/api/route',
+        title: 'Flood-Safe Emergency Routing',
+        desc: 'Calculates dynamic flood-safe evacuation/responder route avoiding inundated street segments at lead time t.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">Quick Presets (Sion Pilot Area)</div>
+            <div class="quick-preset-btns">
+              <button class="btn-preset" onclick="setRouteCoords(19.0390, 72.8619, 19.0728, 72.8826)">Sion Circle ➔ LTT Hospital</button>
+              <button class="btn-preset" onclick="setRouteCoords(19.0335, 72.8580, 19.0465, 72.8665)">Gandhi Market ➔ Sion Fort</button>
+              <button class="btn-preset" onclick="setRouteCoords(19.0400, 72.8635, 19.0480, 72.8510)">Sion Stn ➔ Mahim Outfall</button>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
+              <div class="form-label"><span>Origin [lat, lng]</span></div>
+              <input type="text" id="route_from" value="[19.0390, 72.8619]">
+            </div>
+            <div class="form-group">
+              <div class="form-label"><span>Destination [lat, lng]</span></div>
+              <input type="text" id="route_to" value="[19.0728, 72.8826]">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
+              <div class="form-label"><span>Lead Time (t min)</span></div>
+              <input type="number" id="route_t" value="60" step="15" min="0" max="180">
+            </div>
+            <div class="form-group">
+              <div class="form-label"><span>Routing Mode</span></div>
+              <select id="route_mode">
+                <option value="emergency" selected>emergency (max safety / avoids deep water)</option>
+                <option value="normal">normal (shortest road distance)</option>
+              </select>
+            </div>
+          </div>
+        `,
+        build: () => {
+          let fromPt, toPt;
+          try {
+            fromPt = JSON.parse(document.getElementById('route_from').value);
+            toPt = JSON.parse(document.getElementById('route_to').value);
+          } catch(e) {
+            alert('Coordinates must be valid JSON arrays, e.g. [19.0390, 72.8619]');
+            return null;
+          }
+          const t = parseInt(document.getElementById('route_t').value || 60);
+          const mode = document.getElementById('route_mode').value;
+          return {
+            url: `${BASE_URL}/api/route`,
+            method: 'POST',
+            body: { from: fromPt, to: toPt, t: t, mode: mode }
+          };
+        }
+      },
+      drain_block: {
+        method: 'POST',
+        path: '/api/drain/block',
+        title: 'Drain Blockage & Simulation Trigger',
+        desc: 'Simulates a clogged catch-basin / pipe and automatically triggers a coupled hydrodynamic re-run of all forecast timesteps.',
+        render: () => `
+          <div class="form-group">
+            <div class="form-label">
+              <span>Drain Node ID</span>
+              <span class="hint">Inlet / Junction</span>
+            </div>
+            <select id="block_drain_id">
+              <option value="INLET_SION_CIRCLE" selected>INLET_SION_CIRCLE (Sion Circle Sump)</option>
+              <option value="INLET_SION_STATION_E">INLET_SION_STATION_E (Sion Station East)</option>
+              <option value="INLET_GANDHI_MKT">INLET_GANDHI_MKT (Gandhi Market Low Inlet)</option>
+              <option value="INLET_KINGS_CIRCLE">INLET_KINGS_CIRCLE (King's Circle Junction)</option>
+              <option value="INLET_ROAD_24">INLET_ROAD_24 (Road No. 24 Drain)</option>
+              <option value="INLET_LBS_MARG_S">INLET_LBS_MARG_S (LBS Marg South Junction)</option>
+              <option value="INLET_DHARAVI_LINK">INLET_DHARAVI_LINK (Dharavi Link)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="block_state" checked style="width: 16px; height: 16px;">
+              <span>Mark Drain as Blocked (Uncheck to clear blockage)</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <div class="form-label">
+              <span>Capacity Reduction Fraction</span>
+              <span class="hint">1.0 = 100% blocked</span>
+            </div>
+            <div class="range-container">
+              <input type="range" id="block_reduction" min="0.1" max="1.0" step="0.1" value="1.0" oninput="document.getElementById('val_reduc').textContent = Math.round(this.value * 100) + '%'">
+              <span class="range-val" id="val_reduc">100%</span>
+            </div>
+          </div>
+          <div style="font-size: 11px; color: var(--amber); background: rgba(210,153,34,0.1); border: 1px solid rgba(210,153,34,0.3); padding: 8px; border-radius: 4px;">
+            ⚠️ Note: Re-running 2D overland + 1D SWMM drainage simulation takes ~1 to 2 seconds on the backend.
+          </div>
+        `,
+        build: () => {
+          const drainId = document.getElementById('block_drain_id').value;
+          const blocked = document.getElementById('block_state').checked;
+          const reduction = parseFloat(document.getElementById('block_reduction').value);
+          return {
+            url: `${BASE_URL}/api/drain/block`,
+            method: 'POST',
+            body: { drain_id: drainId, blocked: blocked, capacity_reduction: reduction }
+          };
+        }
+      },
+      rainfall: {
+        method: 'GET',
+        path: '/api/rainfall',
+        title: 'Rainfall Time Series Event',
+        desc: 'Returns monsoonal storm hyetograph profile and peak intensity driving the flood model.',
+        render: () => `
+          <div style="font-size: 13px; color: var(--text-muted);">
+            Fetches <code>data/rainfall_event.csv</code> parsed records, duration, and maximum rainfall rate. No arguments required.
+          </div>
+        `,
+        build: () => ({ url: `${BASE_URL}/api/rainfall`, method: 'GET', body: null })
+      },
+      drains: {
+        method: 'GET',
+        path: '/api/drains',
+        title: 'Drainage Network (GeoJSON)',
+        desc: 'Returns stormwater pipe and junction network with real-time blockage status annotations.',
+        render: () => `
+          <div style="font-size: 13px; color: var(--text-muted);">
+            Returns GeoJSON FeatureCollection of inlets, pipes, manholes and outfalls.
+          </div>
+        `,
+        build: () => ({ url: `${BASE_URL}/api/drains`, method: 'GET', body: null })
+      },
+      roads: {
+        method: 'GET',
+        path: '/api/roads',
+        title: 'Road Network (GeoJSON)',
+        desc: 'Returns base road network geometry features for the pilot domain.',
+        render: () => `
+          <div style="font-size: 13px; color: var(--text-muted);">
+            Returns GeoJSON FeatureCollection of roads and junctions.
+          </div>
+        `,
+        build: () => ({ url: `${BASE_URL}/api/roads`, method: 'GET', body: null })
+      },
+      custom: {
+        method: 'ANY',
+        path: 'Custom Request',
+        title: 'Custom HTTP Request Builder',
+        desc: 'Send arbitrary requests to any endpoint on this backend.',
+        render: () => `
+          <div style="display: grid; grid-template-columns: 120px 1fr; gap: 10px;">
+            <div class="form-group">
+              <div class="form-label">Method</div>
+              <select id="custom_method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="form-label">Endpoint Path</div>
+              <input type="text" id="custom_path" value="/api/summary?t=45">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">JSON Body (for POST/PUT)</div>
+            <textarea id="custom_body" rows="6" placeholder='{"key": "value"}'></textarea>
+          </div>
+        `,
+        build: () => {
+          const method = document.getElementById('custom_method').value;
+          const path = document.getElementById('custom_path').value.trim();
+          let body = null;
+          const bodyText = document.getElementById('custom_body').value.trim();
+          if (bodyText && (method === 'POST' || method === 'PUT')) {
+            try {
+              body = JSON.parse(bodyText);
+            } catch(e) {
+              alert('Invalid JSON in custom body');
+              return null;
+            }
+          }
+          const url = path.startsWith('http') ? path : `${BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+          return { url, method, body };
+        }
+      }
+    };
+
+    function setRange(rangeId, textId, val) {
+      const el = document.getElementById(rangeId);
+      if (el) {
+        el.value = val;
+        document.getElementById(textId).textContent = val + ' min';
+      }
+    }
+
+    function setRouteCoords(lat1, lng1, lat2, lng2) {
+      document.getElementById('route_from').value = `[${lat1}, ${lng1}]`;
+      document.getElementById('route_to').value = `[${lat2}, ${lng2}]`;
+    }
+
+    function selectEndpoint(id) {
+      activeEndpointId = id;
+      // Update sidebar nav items
+      const links = document.querySelectorAll('#endpointNav .nav-item');
+      links.forEach(l => l.classList.remove('active'));
+      const activeIdx = Object.keys(ENDPOINTS).indexOf(id);
+      if (activeIdx >= 0 && links[activeIdx]) {
+        links[activeIdx].classList.add('active');
+      }
+
+      const ep = ENDPOINTS[id];
+      const formArea = document.getElementById('endpointFormArea');
+      const badgeClass = ep.method === 'POST' ? 'badge-post' : 'badge-get';
+
+      formArea.innerHTML = `
+        <div class="pane-header">
+          <div class="pane-title-row">
+            <span class="badge ${badgeClass}">${ep.method}</span>
+            <span class="pane-title">${ep.title}</span>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 12px; color: var(--accent);">${ep.path}</div>
+          <p class="pane-desc">${ep.desc}</p>
+        </div>
+
+        <form id="activeForm" onsubmit="event.preventDefault(); executeActiveRequest();" style="display:flex; flex-direction:column; gap:16px;">
+          ${ep.render()}
+          <div class="action-row">
+            <button type="submit" class="btn btn-primary" id="btnSend">
+              <span id="sendBtnIcon">🚀</span> Send Request
+            </button>
+            <button type="button" class="btn" onclick="copyCurlCommand()">
+              cURL
+            </button>
+          </div>
+        </form>
+      `;
+    }
+
+    async function executeActiveRequest() {
+      const ep = ENDPOINTS[activeEndpointId];
+      const req = ep.build();
+      if (!req) return;
+
+      lastRequestUrl = req.url;
+      lastRequestMethod = req.method;
+      lastRequestBody = req.body;
+
+      const btn = document.getElementById('btnSend');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner"></span> Sending...';
+      }
+
+      const startTime = performance.now();
+      try {
+        const fetchOptions = {
+          method: req.method,
+          headers: {
+            'Accept': 'application/json'
+          }
+        };
+
+        if (req.body && req.method !== 'GET') {
+          fetchOptions.headers['Content-Type'] = 'application/json';
+          fetchOptions.body = JSON.stringify(req.body);
+        }
+
+        const res = await fetch(req.url, fetchOptions);
+        const duration = Math.round(performance.now() - startTime);
+        const text = await res.text();
+        rawResponseText = text;
+
+        displayResponse(res.status, res.statusText, duration, text);
+      } catch (err) {
+        const duration = Math.round(performance.now() - startTime);
+        displayResponse(0, 'Network / Connection Error', duration, JSON.stringify({
+          error: "Failed to connect to backend",
+          message: err.message,
+          url: req.url,
+          tip: "Ensure Flask is running: `python app.py`"
+        }, null, 2));
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span id="sendBtnIcon">🚀</span> Send Request';
+        }
+      }
+    }
+
+    function displayResponse(status, statusText, durationMs, rawText) {
+      const statusBadge = document.getElementById('resStatusBadge');
+      const timeBadge = document.getElementById('resTimeBadge');
+      const sizeBadge = document.getElementById('resSizeBadge');
+      const output = document.getElementById('jsonOutput');
+      const banner = document.getElementById('quickInsightBanner');
+
+      statusBadge.style.display = 'inline-block';
+      timeBadge.style.display = 'inline-block';
+      sizeBadge.style.display = 'inline-block';
+
+      statusBadge.textContent = `${status || 'ERR'} ${statusText}`;
+      if (status >= 200 && status < 300) {
+        statusBadge.className = 'badge badge-status-ok';
+      } else {
+        statusBadge.className = 'badge badge-status-err';
+      }
+
+      timeBadge.textContent = `${durationMs} ms`;
+      const byteLen = new Blob([rawText]).size;
+      sizeBadge.textContent = byteLen > 1024 ? `${(byteLen / 1024).toFixed(1)} KB` : `${byteLen} B`;
+
+      // Try to parse JSON
+      try {
+        const data = JSON.parse(rawText);
+        output.innerHTML = syntaxHighlight(JSON.stringify(data, null, 2));
+
+        // Generate Quick Insight Pill Banner
+        banner.style.display = 'block';
+        if (data.type === 'FeatureCollection') {
+          banner.innerHTML = `✓ GeoJSON FeatureCollection (${data.features ? data.features.length : 0} features loaded)`;
+        } else if (data.breakdown) {
+          banner.innerHTML = `✓ Summary: Max Depth: <b>${data.max_depth_cm}cm</b> | Red impassable: <b>${data.breakdown.impassable_red}</b> | Orange risk: <b>${data.breakdown.risk_orange}</b>`;
+        } else if (data.hotspots) {
+          banner.innerHTML = `✓ Hotspots Found: <b>${data.count}</b> critical locations`;
+        } else if (data.route_distance_km !== undefined) {
+          banner.innerHTML = `✓ Route Found: <b>${data.route_distance_km.toFixed(2)} km</b> | ETA: <b>${data.estimated_time_min.toFixed(1)} min</b> | Inundated streets avoided: <b>${data.avoided.length}</b>`;
+        } else if (data.active_blockages !== undefined) {
+          banner.innerHTML = `✓ Blockage updated: Active Blockages: <b>${Object.keys(data.active_blockages).join(', ') || 'None'}</b>`;
+        } else if (data.peak_intensity_mm_hr !== undefined) {
+          banner.innerHTML = `✓ Rainfall Event: Peak Intensity <b>${data.peak_intensity_mm_hr} mm/hr</b> | Duration: <b>${data.duration_minutes} min</b>`;
+        } else {
+          banner.style.display = 'none';
+        }
+      } catch (e) {
+        banner.style.display = 'none';
+        output.textContent = rawText;
+      }
+    }
+
+    function syntaxHighlight(json) {
+      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        let cls = 'json-number';
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+            cls = 'json-key';
+          } else {
+            cls = 'json-string';
+          }
+        } else if (/true|false/.test(match)) {
+          cls = 'json-boolean';
+        } else if (/null/.test(match)) {
+          cls = 'json-null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+      });
+    }
+
+    function copyResponseJson() {
+      if (!rawResponseText) return;
+      navigator.clipboard.writeText(rawResponseText).then(() => {
+        alert('Response copied to clipboard!');
+      });
+    }
+
+    function copyCurlCommand() {
+      const ep = ENDPOINTS[activeEndpointId];
+      const req = ep.build();
+      if (!req) return;
+
+      let curl = `curl -X ${req.method} "${req.url}"`;
+      if (req.body && req.method !== 'GET') {
+        curl += ` -H "Content-Type: application/json" -d '${JSON.stringify(req.body)}'`;
+      }
+      navigator.clipboard.writeText(curl).then(() => {
+        alert('cURL command copied to clipboard:\n\n' + curl);
+      });
+    }
+
+    function clearResponse() {
+      rawResponseText = '';
+      document.getElementById('resStatusBadge').style.display = 'none';
+      document.getElementById('resTimeBadge').style.display = 'none';
+      document.getElementById('resSizeBadge').style.display = 'none';
+      document.getElementById('quickInsightBanner').style.display = 'none';
+      document.getElementById('jsonOutput').textContent = '// Cleared. Select an endpoint and click Send Request.';
+    }
+
+    // Health Check on load
+    async function checkBackendHealth() {
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      try {
+        const res = await fetch(`${BASE_URL}/api/summary?t=0`);
+        if (res.ok) {
+          dot.className = 'status-dot online';
+          text.textContent = 'Backend Online (Port 5000)';
+        } else {
+          dot.className = 'status-dot offline';
+          text.textContent = `Backend HTTP ${res.status}`;
+        }
+      } catch (e) {
+        dot.className = 'status-dot offline';
+        text.textContent = 'Backend Offline';
+      }
+    }
+
+    // Run All Tests Suite
+    async function runAllTests() {
+      const suiteContainer = document.getElementById('suiteContainer');
+      const tbody = document.getElementById('suiteTableBody');
+      const btn = document.getElementById('btnRunSuite');
+
+      suiteContainer.style.display = 'block';
+      tbody.innerHTML = '';
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading-spinner"></span> Running Suite...';
+
+      const testsToRun = [
+        { name: 'Summary (t=60)', method: 'GET', url: `${BASE_URL}/api/summary?t=60`, body: null },
+        { name: 'Forecast GeoJSON (t=60)', method: 'GET', url: `${BASE_URL}/api/forecast?t=60`, body: null },
+        { name: 'Hotspots (t=60, min_depth=15)', method: 'GET', url: `${BASE_URL}/api/hotspots?t=60&min_depth=15`, body: null },
+        { name: 'Safe Route (Emergency)', method: 'POST', url: `${BASE_URL}/api/route`, body: { from: [19.0390, 72.8619], to: [19.0728, 72.8826], t: 60, mode: "emergency" } },
+        { name: 'Rainfall Profile', method: 'GET', url: `${BASE_URL}/api/rainfall`, body: null },
+        { name: 'Drains Network', method: 'GET', url: `${BASE_URL}/api/drains`, body: null },
+        { name: 'Roads Network', method: 'GET', url: `${BASE_URL}/api/roads`, body: null },
+        { name: 'Drain Blockage Toggle', method: 'POST', url: `${BASE_URL}/api/drain/block`, body: { drain_id: "INLET_SION_CIRCLE", blocked: false, capacity_reduction: 0.0 } }
+      ];
+
+      for (const t of testsToRun) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><span class="badge ${t.method === 'POST' ? 'badge-post' : 'badge-get'}">${t.method}</span></td>
+          <td>${t.url.replace(BASE_URL, '')}</td>
+          <td><span class="loading-spinner"></span> Testing...</td>
+          <td>-</td>
+          <td>-</td>
+        `;
+        tbody.appendChild(row);
+
+        const t0 = performance.now();
+        try {
+          const opts = { method: t.method, headers: { 'Accept': 'application/json' } };
+          if (t.body) {
+            opts.headers['Content-Type'] = 'application/json';
+            opts.body = JSON.stringify(t.body);
+          }
+          const res = await fetch(t.url, opts);
+          const dur = Math.round(performance.now() - t0);
+          const data = await res.json();
+
+          let summary = 'OK';
+          if (data.features) summary = `${data.features.length} GeoJSON features`;
+          else if (data.hotspots) summary = `${data.count} hotspots`;
+          else if (data.route_distance_km) summary = `${data.route_distance_km.toFixed(1)} km route, avoided: ${data.avoided.length}`;
+          else if (data.max_depth_cm !== undefined) summary = `Max depth: ${data.max_depth_cm}cm`;
+          else if (data.peak_intensity_mm_hr !== undefined) summary = `Peak: ${data.peak_intensity_mm_hr} mm/hr`;
+          else if (data.status) summary = `Status: ${data.status}`;
+
+          row.children[2].innerHTML = `<span class="badge badge-status-ok">${res.status} OK</span>`;
+          row.children[3].textContent = `${dur} ms`;
+          row.children[4].textContent = summary;
+        } catch (err) {
+          const dur = Math.round(performance.now() - t0);
+          row.children[2].innerHTML = `<span class="badge badge-status-err">FAIL</span>`;
+          row.children[3].textContent = `${dur} ms`;
+          row.children[4].textContent = err.message;
+        }
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '<span>▶</span> Run All Tests Suite';
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      selectEndpoint('summary');
+      checkBackendHealth();
+    });
+  </script>
+</body>
+</html>
