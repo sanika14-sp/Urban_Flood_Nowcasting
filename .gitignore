@@ -4,3 +4,5 @@ __pycache__/
 venv/
 .venv/
 .env
+routing_original_backup.py
+.gitignore
