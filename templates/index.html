@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Urban Flood Nowcasting - Live Map GIS Dashboard</title>
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
 
   <style>
     :root {
@@ -28,7 +32,12 @@
       --mono: 'JetBrains Mono', monospace;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -145,8 +154,15 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
     }
 
     /* Main Container */
@@ -285,10 +301,21 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .breakdown-pill.red { border-bottom: 3px solid var(--red); }
-    .breakdown-pill.orange { border-bottom: 3px solid var(--orange); }
-    .breakdown-pill.yellow { border-bottom: 3px solid var(--yellow); }
-    .breakdown-pill.green { border-bottom: 3px solid var(--green); }
+    .breakdown-pill.red {
+      border-bottom: 3px solid var(--red);
+    }
+
+    .breakdown-pill.orange {
+      border-bottom: 3px solid var(--orange);
+    }
+
+    .breakdown-pill.yellow {
+      border-bottom: 3px solid var(--yellow);
+    }
+
+    .breakdown-pill.green {
+      border-bottom: 3px solid var(--green);
+    }
 
     /* Quick Safe Routing Card */
     .routing-card {
@@ -495,7 +522,9 @@
       color: var(--text-muted);
     }
 
-    .toggle-item:hover { color: #fff; }
+    .toggle-item:hover {
+      color: #fff;
+    }
 
     /* Custom Leaflet Tooltip & Popup */
     .leaflet-popup-content-wrapper {
@@ -537,15 +566,19 @@
         width: calc(100% - 32px);
         max-height: 280px;
       }
-      .legend-panel, .layers-toggle-panel {
+
+      .legend-panel,
+      .layers-toggle-panel {
         display: none;
       }
+
       .timeline-panel {
         bottom: 12px;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Top Header Navigation -->
@@ -585,7 +618,8 @@
         <span style="font-size: 18px;" id="alertIcon">⚠️</span>
         <div>
           <div style="font-weight: 700; font-size: 12px;" id="alertHeadline">Fetching Advisory...</div>
-          <div id="alertDescription" style="font-size: 11px; color: var(--text-muted);">Analyzing current flood depth conditions across monitored junctions.</div>
+          <div id="alertDescription" style="font-size: 11px; color: var(--text-muted);">Analyzing current flood depth
+            conditions across monitored junctions.</div>
         </div>
       </div>
 
@@ -594,12 +628,16 @@
         <div class="stat-card">
           <div class="stat-label">Max Inundation</div>
           <div class="stat-value" id="statMaxDepth">-- cm</div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="barMaxDepth" style="width: 50%;"></div></div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill" id="barMaxDepth" style="width: 50%;"></div>
+          </div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Avg Street Depth</div>
           <div class="stat-value" id="statAvgDepth">-- cm</div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="barAvgDepth" style="width: 20%; background:#10b981;"></div></div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill" id="barAvgDepth" style="width: 20%; background:#10b981;"></div>
+          </div>
         </div>
       </div>
 
@@ -646,7 +684,9 @@
         <button class="btn-action" onclick="computeQuickRoute()">
           <span>⚡ Find Safe Route</span>
         </button>
-        <div id="quickRouteResult" style="display:none; font-size:11px; padding:8px; border-radius:6px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); font-family:var(--mono);"></div>
+        <div id="quickRouteResult"
+          style="display:none; font-size:11px; padding:8px; border-radius:6px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); font-family:var(--mono);">
+        </div>
       </div>
     </div>
 
@@ -692,7 +732,8 @@
     <div class="map-floating-panel timeline-panel">
       <div class="timeline-header">
         <div class="player-controls">
-          <button class="btn-play" id="btnPlayPause" onclick="togglePlayAnimation()" title="Play / Pause Timeline">▶</button>
+          <button class="btn-play" id="btnPlayPause" onclick="togglePlayAnimation()"
+            title="Play / Pause Timeline">▶</button>
           <div style="display:flex; flex-direction:column;">
             <span style="font-size:11px; color:var(--text-muted); font-weight:600;">NOWCAST LEAD TIME</span>
             <span class="time-badge" id="timeBadge">+60 min (Peak Event)</span>
@@ -700,12 +741,14 @@
         </div>
         <div style="text-align:right;">
           <span style="font-size:11px; color:var(--text-muted);">Rain Intensity: </span>
-          <span style="font-size:13px; font-weight:700; color:#38bdf8; font-family:var(--mono);" id="rainRateLabel">75.0 mm/hr</span>
+          <span style="font-size:13px; font-weight:700; color:#38bdf8; font-family:var(--mono);" id="rainRateLabel">75.0
+            mm/hr</span>
         </div>
       </div>
 
       <div class="slider-track">
-        <input type="range" id="timeSlider" min="0" max="180" step="15" value="60" oninput="onTimeSliderChange(this.value)">
+        <input type="range" id="timeSlider" min="0" max="180" step="15" value="60"
+          oninput="onTimeSliderChange(this.value)">
         <div class="timeline-ticks">
           <span>0m (Onset)</span>
           <span>30m</span>
@@ -720,7 +763,8 @@
   </div>
 
   <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script>
     // State
@@ -748,10 +792,9 @@
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-      // Dark Basemap (CartoDB Dark Matter)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        subdomains: 'abcd',
+      // OpenStreetMap basemap — no API key required
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
       }).addTo(map);
 
@@ -782,7 +825,7 @@
         hotspotsLayer = L.layerGroup();
 
         roadsLayer = L.geoJSON(geojson, {
-          style: function(feature) {
+          style: function (feature) {
             const depth = feature.properties.depth_cm || 0;
             const color = getDepthColor(depth);
             const isHotspot = feature.properties.is_hotspot;
@@ -795,7 +838,7 @@
               lineJoin: 'round'
             };
           },
-          onEachFeature: function(feature, layer) {
+          onEachFeature: function (feature, layer) {
             const props = feature.properties;
             const depth = props.depth_cm || 0;
             const color = getDepthColor(depth);
@@ -856,7 +899,7 @@
         const data = await res.json();
 
         drainsLayer = L.geoJSON(data, {
-          pointToLayer: function(feature, latlng) {
+          pointToLayer: function (feature, latlng) {
             const isBlocked = feature.properties.is_blocked;
             const type = feature.properties.type;
             const color = isBlocked ? '#ef4444' : (type === 'outfall' ? '#38bdf8' : '#a855f7');
@@ -870,12 +913,12 @@
               fillOpacity: 0.85
             });
           },
-          style: function(feature) {
+          style: function (feature) {
             if (feature.geometry.type === 'LineString') {
               return { color: '#6366f1', weight: 2, dashArray: '4, 4', opacity: 0.6 };
             }
           },
-          onEachFeature: function(feature, layer) {
+          onEachFeature: function (feature, layer) {
             const p = feature.properties;
             layer.bindPopup(`
               <b>${p.name || p.id}</b><br>
@@ -1069,4 +1112,5 @@
     window.addEventListener('DOMContentLoaded', initMap);
   </script>
 </body>
+
 </html>
