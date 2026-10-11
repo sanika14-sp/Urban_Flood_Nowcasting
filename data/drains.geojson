@@ -1,0 +1,600 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "INLET_SION_FORT",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8665,
+          19.0465
+        ]
+      },
+      "properties": {
+        "id": "INLET_SION_FORT",
+        "name": "Sion Fort Inlet",
+        "type": "inlet",
+        "ponding_area_m2": 800,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_SION_STATION_E",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8635,
+          19.04
+        ]
+      },
+      "properties": {
+        "id": "INLET_SION_STATION_E",
+        "name": "Sion Station East",
+        "type": "inlet",
+        "ponding_area_m2": 1500,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_SION_CIRCLE",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8619,
+          19.039
+        ]
+      },
+      "properties": {
+        "id": "INLET_SION_CIRCLE",
+        "name": "Sion Circle Sump",
+        "type": "junction",
+        "ponding_area_m2": 3200,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_LBS_MARG_N",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8645,
+          19.049
+        ]
+      },
+      "properties": {
+        "id": "INLET_LBS_MARG_N",
+        "name": "LBS Marg North Inlet",
+        "type": "inlet",
+        "ponding_area_m2": 1200,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_LBS_MARG_S",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.863,
+          19.044
+        ]
+      },
+      "properties": {
+        "id": "INLET_LBS_MARG_S",
+        "name": "LBS Marg South Junction",
+        "type": "junction",
+        "ponding_area_m2": 1800,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_ROAD_24",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.857,
+          19.042
+        ]
+      },
+      "properties": {
+        "id": "INLET_ROAD_24",
+        "name": "Road No. 24 Drain",
+        "type": "junction",
+        "ponding_area_m2": 2400,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_GANDHI_MKT",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.858,
+          19.0335
+        ]
+      },
+      "properties": {
+        "id": "INLET_GANDHI_MKT",
+        "name": "Gandhi Market Low Inlet",
+        "type": "junction",
+        "ponding_area_m2": 3800,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_KINGS_CIRCLE",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.856,
+          19.0315
+        ]
+      },
+      "properties": {
+        "id": "INLET_KINGS_CIRCLE",
+        "name": "King's Circle Junction",
+        "type": "junction",
+        "ponding_area_m2": 2600,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_SULO_SHETTY",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.86,
+          19.045
+        ]
+      },
+      "properties": {
+        "id": "INLET_SULO_SHETTY",
+        "name": "Sulochana Shetty Marg",
+        "type": "inlet",
+        "ponding_area_m2": 1400,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_DHARAVI_LINK",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.854,
+          19.04
+        ]
+      },
+      "properties": {
+        "id": "INLET_DHARAVI_LINK",
+        "name": "Dharavi Link Junction",
+        "type": "junction",
+        "ponding_area_m2": 2000,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "OUTFALL_MAHIM_1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.851,
+          19.048
+        ]
+      },
+      "properties": {
+        "id": "OUTFALL_MAHIM_1",
+        "name": "Mahim Creek Outfall North",
+        "type": "outfall",
+        "ponding_area_m2": 5000,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "OUTFALL_MAHIM_2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8505,
+          19.039
+        ]
+      },
+      "properties": {
+        "id": "OUTFALL_MAHIM_2",
+        "name": "Mahim Creek Outfall Central",
+        "type": "outfall",
+        "ponding_area_m2": 5000,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "OUTFALL_MAHIM_3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8515,
+          19.032
+        ]
+      },
+      "properties": {
+        "id": "OUTFALL_MAHIM_3",
+        "name": "Mahim Creek Outfall South",
+        "type": "outfall",
+        "ponding_area_m2": 5000,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_LTT_CONNECTOR",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.871,
+          19.052
+        ]
+      },
+      "properties": {
+        "id": "INLET_LTT_CONNECTOR",
+        "name": "LTT Kurla Connector Drain",
+        "type": "inlet",
+        "ponding_area_m2": 1600,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "INLET_EEH_CHUNABHATTI",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.868,
+          19.042
+        ]
+      },
+      "properties": {
+        "id": "INLET_EEH_CHUNABHATTI",
+        "name": "EEH Chunabhatti Drain",
+        "type": "inlet",
+        "ponding_area_m2": 2200,
+        "feature_class": "drain_node"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_SION_FORT_TO_INLET_SION_STATION_E",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8665,
+            19.0465
+          ],
+          [
+            72.8635,
+            19.04
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_SION_FORT_TO_INLET_SION_STATION_E",
+        "from_node": "INLET_SION_FORT",
+        "to_node": "INLET_SION_STATION_E",
+        "capacity_mm_hr": 55.0,
+        "diameter_m": 1.2,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_LBS_MARG_N_TO_INLET_LBS_MARG_S",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8645,
+            19.049
+          ],
+          [
+            72.863,
+            19.044
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_LBS_MARG_N_TO_INLET_LBS_MARG_S",
+        "from_node": "INLET_LBS_MARG_N",
+        "to_node": "INLET_LBS_MARG_S",
+        "capacity_mm_hr": 50.0,
+        "diameter_m": 1.4,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_LBS_MARG_S_TO_INLET_SION_CIRCLE",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.863,
+            19.044
+          ],
+          [
+            72.8619,
+            19.039
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_LBS_MARG_S_TO_INLET_SION_CIRCLE",
+        "from_node": "INLET_LBS_MARG_S",
+        "to_node": "INLET_SION_CIRCLE",
+        "capacity_mm_hr": 45.0,
+        "diameter_m": 1.5,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_SION_STATION_E_TO_INLET_SION_CIRCLE",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8635,
+            19.04
+          ],
+          [
+            72.8619,
+            19.039
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_SION_STATION_E_TO_INLET_SION_CIRCLE",
+        "from_node": "INLET_SION_STATION_E",
+        "to_node": "INLET_SION_CIRCLE",
+        "capacity_mm_hr": 42.0,
+        "diameter_m": 1.4,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_EEH_CHUNABHATTI_TO_INLET_SION_CIRCLE",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.868,
+            19.042
+          ],
+          [
+            72.8619,
+            19.039
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_EEH_CHUNABHATTI_TO_INLET_SION_CIRCLE",
+        "from_node": "INLET_EEH_CHUNABHATTI",
+        "to_node": "INLET_SION_CIRCLE",
+        "capacity_mm_hr": 48.0,
+        "diameter_m": 1.5,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_SION_CIRCLE_TO_INLET_ROAD_24",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.8619,
+            19.039
+          ],
+          [
+            72.857,
+            19.042
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_SION_CIRCLE_TO_INLET_ROAD_24",
+        "from_node": "INLET_SION_CIRCLE",
+        "to_node": "INLET_ROAD_24",
+        "capacity_mm_hr": 40.0,
+        "diameter_m": 1.6,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_SULO_SHETTY_TO_INLET_ROAD_24",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.86,
+            19.045
+          ],
+          [
+            72.857,
+            19.042
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_SULO_SHETTY_TO_INLET_ROAD_24",
+        "from_node": "INLET_SULO_SHETTY",
+        "to_node": "INLET_ROAD_24",
+        "capacity_mm_hr": 45.0,
+        "diameter_m": 1.2,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_ROAD_24_TO_INLET_DHARAVI_LINK",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.857,
+            19.042
+          ],
+          [
+            72.854,
+            19.04
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_ROAD_24_TO_INLET_DHARAVI_LINK",
+        "from_node": "INLET_ROAD_24",
+        "to_node": "INLET_DHARAVI_LINK",
+        "capacity_mm_hr": 42.0,
+        "diameter_m": 1.8,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_DHARAVI_LINK_TO_OUTFALL_MAHIM_2",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.854,
+            19.04
+          ],
+          [
+            72.8505,
+            19.039
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_DHARAVI_LINK_TO_OUTFALL_MAHIM_2",
+        "from_node": "INLET_DHARAVI_LINK",
+        "to_node": "OUTFALL_MAHIM_2",
+        "capacity_mm_hr": 70.0,
+        "diameter_m": 2.2,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_GANDHI_MKT_TO_INLET_KINGS_CIRCLE",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.858,
+            19.0335
+          ],
+          [
+            72.856,
+            19.0315
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_GANDHI_MKT_TO_INLET_KINGS_CIRCLE",
+        "from_node": "INLET_GANDHI_MKT",
+        "to_node": "INLET_KINGS_CIRCLE",
+        "capacity_mm_hr": 38.0,
+        "diameter_m": 1.4,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_KINGS_CIRCLE_TO_OUTFALL_MAHIM_3",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.856,
+            19.0315
+          ],
+          [
+            72.8515,
+            19.032
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_KINGS_CIRCLE_TO_OUTFALL_MAHIM_3",
+        "from_node": "INLET_KINGS_CIRCLE",
+        "to_node": "OUTFALL_MAHIM_3",
+        "capacity_mm_hr": 60.0,
+        "diameter_m": 2.0,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_LTT_CONNECTOR_TO_INLET_LBS_MARG_N",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.871,
+            19.052
+          ],
+          [
+            72.8645,
+            19.049
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_LTT_CONNECTOR_TO_INLET_LBS_MARG_N",
+        "from_node": "INLET_LTT_CONNECTOR",
+        "to_node": "INLET_LBS_MARG_N",
+        "capacity_mm_hr": 50.0,
+        "diameter_m": 1.3,
+        "feature_class": "drain_pipe"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "PIPE_INLET_SULO_SHETTY_TO_OUTFALL_MAHIM_1",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            72.86,
+            19.045
+          ],
+          [
+            72.851,
+            19.048
+          ]
+        ]
+      },
+      "properties": {
+        "id": "PIPE_INLET_SULO_SHETTY_TO_OUTFALL_MAHIM_1",
+        "from_node": "INLET_SULO_SHETTY",
+        "to_node": "OUTFALL_MAHIM_1",
+        "capacity_mm_hr": 65.0,
+        "diameter_m": 1.8,
+        "feature_class": "drain_pipe"
+      }
+    }
+  ]
+}
