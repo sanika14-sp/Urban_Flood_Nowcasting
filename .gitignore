@@ -6,3 +6,6 @@ venv/
 .env
 routing_original_backup.py
 .gitignore
+# Large generated road-network files
+data/roads.geojson
+data/roads.graphml
